@@ -1,6 +1,6 @@
 # Skymid Flashcards
 
-![Skymid Flashcards Logo/Banner - Placeholder, replace with actual image](https://via.placeholder.com/800x200?text=Skymid+Flashcards)
+
 
 Skymid Flashcards is an AI-powered application designed to help you quickly create and manage flashcards from any text. Leveraging the power of AI, it transforms your notes, articles, or study materials into interactive flashcards, making learning and memorization more efficient.
 
