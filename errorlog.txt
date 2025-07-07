@@ -1,0 +1,1135 @@
+PS D:\AI\GEMINI\Flashcard> npm run dev
+
+> nextn@0.1.0 dev
+> next dev --turbopack -p 9002
+
+   ▲ Next.js 15.3.3 (Turbopack)
+   - Local:        http://localhost:9002
+   - Network:      http://192.168.46.219:9002
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 949ms
+ ○ Compiling / ...
+ ✓ Compiled / in 2.1s
+ GET / 200 in 2689ms
+AI Raw Text Output: ```json
+{
+  "flashcards": [
+    {
+      "question": "What is the aim of Experiment 3?",
+      "answer": "To examine and report on the cardiovascular system of the subject."
+    },
+    {
+      "question": "What are the requirements for the examination of the cardiovascular system in Experiment 3?",
+      "answer": "Stethoscope\n\nSphygmomanometer\n\nTwo rulers"
+    },
+    {
+      "question": "What is the first major section in the examination of the cardiovascular system?",
+      "answer": "I. General Examination"
+    },
+    {
+      "question": "What should precede any systemic examination in a cardiovascular assessment?",
+      "answer": "A general examination."
+    },
+    {
+      "question": "What points that have relevance in the cardiovascular system should be given major significance and examined first in the general examination?",
+      "answer": "Dyspnea\n\nCyanosis\n\nPulse\n\nBP (Blood Pressure)\n\nClubbing\n\nEdema"
+    },
+    {
+      "question": "What is the second major section in the examination of the cardiovascular system?",
+      "answer": "II. Systemic Examination"
+    },
+    {
+      "question": "What is the prescribed order for the systemic examination of the cardiovascular system?",
+      "answer": "1. Arterial pulse\n2. Measurement of Blood pressure\n3. Examination of jugular venous pulse and pressure\n4. Examination of the chest and precordium"
+    },
+    {
+      "question": "What is the first step in the systemic examination of the cardiovascular system?",
+      "answer": "1. Arterial pulse"
+    },
+    {
+      "question": "What aspects of the arterial pulse should be examined in detail?",
+      "answer": "a) Rate\nb) Rhythm\nc) Character\nd) Volume\ne) Condition of the vessel wall\nf) Radio femoral delay\ng) Other peripheral pulsations"
+    },
+    {
+      "question": "What is the arterial pulse?",
+      "answer": "Arterial pulse is the palpable expansile pressure wave transmitted along the arterial walls due to the left ventricular pumping of blood into an already-filled aorta."
+    },
+    {
+      "question": "How is the arterial pulse expanded?",
+      "answer": "The pressure wave expands the arterial walls and the expansion is palpable as the pulse."
+    },
+    {
+      "question": "How is the arterial pulse palpated?",
+      "answer": "Arterial pulses are palpated by compressing the artery against a firm underlying structure, usually a bone."
+    },
+    {
+      "question": "How is the radial pulse specifically palpated?",
+      "answer": "The rate and rhythm of the arterial pulse is palpated at the wrist, over the radial artery due to its easily accessible superficial position overlying a bony prominence against which it can be compressed.\n\nThe examiner should stand on the right side of the subject.\n\nSlightly flex the subject's semi-pronated forearm at the elbow and wrist.\n\nSupport the subject's right hand with your right hand, and palpate the radial artery lateral to the flexor carpi radialis tendon by gently compressing the radial artery against the head of radius using the tips of index, middle and ring fingers of your left hand."
+    },
+    {
+      "question": "What is the first characteristic of the arterial pulse to be assessed?",
+      "answer": "(a) Rate"
+    },
+    {
+      "question": "How is the pulse rate measured?",
+      "answer": "The pulse rate is counted for 1 minute and the subject should be well relaxed."
+    },
+    {
+      "question": "What is the normal pulse rate at rest?",
+      "answer": "Normal pulse rate is 60-100 per minute at rest."
+    },
+    {
+      "question": "What is tachycardia?",
+      "answer": "Tachycardia: Pulse rate > 100/min."
+    },
+    {
+      "question": "What is bradycardia?",
+      "answer": "Bradycardia: Pulse rate < 60/min."
+    },
+    {
+      "question": "What are the physiological conditions in which pulse rate is increased?",
+      "answer": "Exercise\n\nAnger\n\nEmotional excitement\n\nAfter meals\n\nChildren\n\nIntrauterine life (because vagal tone is not fully developed)\n\nPregnancy"
+    },
+    {
+      "question": "What are the pathological conditions in which pulse rate is increased?",
+      "answer": "Fever (increase in body temperature directly stimulates the SA node. Heart rate increases by 10/min for every 1°F increase or by 18/min for every 1°C increase)\n\nHyperthyroidism\n\nHemorrhage\n\nHypovolemia and shock\n\nAnemia\n\nPain\n\nTachyarrhythmias\n\nSeptic infections\n\nDrugs: Atropine (blocks the parasympathetic effects), Beta-adrenergic receptor agonists (adrenaline, isoprenaline, ephedrine, etc.)"
+    },
+    {
+      "question": "What are the physiological conditions in which pulse rate is decreased?",
+      "answer": "Trained athletes (due to greater vagal tone and greater stroke volume)\n\nFear\n\nGrief\n\nVery old age\n\nDuring sleep"
+    },
+    {
+      "question": "What are the pathological conditions in which pulse rate is decreased?",
+      "answer": "Hypothyroidism\n\nTyphoid (enteric) fever\n\nHeart block\n\nObstructive jaundice (due to inhibition of SA node by bile salts)\n\nIncreased intracranial pressure (with activates Cushing's reflex to increase arterial BP which in turn will then activate Sino aortic reflex mechanism resulting in bradycardia)\n\nDrugs: Beta-adrenergic receptor blockers (e.g. propanolol, atenolol), digitalis glycosides (stimulate vagal nuclei in the medulla to cause bradycardia)"
+    },
+    {
+      "question": "What is a pulse deficit?",
+      "answer": "In cases of atrial fibrillation, the pulse rate counted at the wrist will be less than the heart rate. This difference is referred to as pulse deficit."
+    },
+    {
+      "question": "When does a pulse deficit occur?",
+      "answer": "This occurs when some of the ventricular systoles are so weak that the stroke volume is insufficient to generate pulse waves in the arterial wall."
+    },
+    {
+      "question": "How is a pulse deficit detected?",
+      "answer": "Pulse deficit is detected by simultaneous checking of pulse rate by one person and heart rate by another person."
+    },
+    {
+      "question": "What is the second characteristic of the arterial pulse to be assessed?",
+      "answer": "(b) Rhythm"
+    },
+    {
+      "question": "What is the rhythm of the pulse?",
+      "answer": "The regularity with which one beat follows the other. Irregularity is the unequal spacing of beats."
+    },
+    {
+      "question": "What should be noted about the pulse rhythm?",
+      "answer": "Note whether the rhythm is regular or irregular. Normal rhythm is regular. If it is irregular, note whether irregularly irregular or regularly irregular."
+    },
+    {
+      "question": "What is a regularly irregular pulse?",
+      "answer": "A regularly irregular pulse is characteristic of an extrasystole."
+    },
+    {
+      "question": "What is an irregularly irregular pulse?",
+      "answer": "An irregularly irregular pulse is characteristic of atrial fibrillation."
+    },
+    {
+      "question": "How should you examine for a pulse of atrial fibrillation?",
+      "answer": "If the pulse is irregular, examine for pulse deficit. The heart rate has to be auscultated by the skilled assistant or the nurse while you count the pulse rate for the same minute."
+    },
+    {
+      "question": "What is the normal rhythm of cardiac activity called?",
+      "answer": "The normal rhythm of cardiac activity is called the normal sinus rhythm (NSR) because it originates in the SA node."
+    },
+    {
+      "question": "What is sinus arrhythmia?",
+      "answer": "The normal variation of heart rate with the phases of respiration is called sinus arrhythmia."
+    },
+    {
+      "question": "What causes sinus arrhythmia?",
+      "answer": "Heart rate increases during inspiration and decreases during expiration. This occurs because the tonic inhibitory parasympathetic discharges from the medullary cardio-inhibitory area through the Vagus nerve to the heart decrease during inspiration and increase during expiration."
+    },
+    {
+      "question": "What is the third characteristic of the arterial pulse to be assessed?",
+      "answer": "(c) Character"
+    },
+    {
+      "question": "How is the character of the pulse studied?",
+      "answer": "This is studied by palpation of the right carotid pulse. It is the pulse closest to the heart and least subject to damping and distortion in the arterial tree."
+    },
+    {
+      "question": "How is the carotid pulse best felt?",
+      "answer": "It is best felt with the thumb pressing backward at the medial border of the right sternomastoid muscle at the level of the thyroid cartilage."
+    },
+    {
+      "question": "Why should you never palpate the carotid on both sides simultaneously?",
+      "answer": "It will occlude the blood supply to the brain."
+    },
+    {
+      "question": "What mainly determines the character of the pulse?",
+      "answer": "The character of the pulse is affected mainly by waveform and to a lesser extent by volume."
+    },
+    {
+      "question": "Describe a normal arterial pulse tracing.",
+      "answer": "A normal arterial pulse tracing has an upstroke and a downstroke. On the peak, is the percussion wave followed by a tidal wave and dicrotic notch on the down stroke."
+    },
+    {
+      "question": "What does an abnormal pulse character indicate?",
+      "answer": "In certain diseases, the character of the pulse is detectably abnormal."
+    },
+    {
+      "question": "What is a slow-rising or anacrotic pulse?",
+      "answer": "This is typically a small volume pulse with a late systolic peak."
+    },
+    {
+      "question": "In what condition is a slow-rising or anacrotic pulse seen?",
+      "answer": "This is seen in aortic stenosis."
+    },
+    {
+      "question": "What is a collapsing or water hammer pulse or Corrigan pulse?",
+      "answer": "This is characterized by rapid upstroke and descent of the pulse wave."
+    },
+    {
+      "question": "In what condition does a collapsing pulse most often occur?",
+      "answer": "It occurs most often in aortic regurgitation."
+    },
+    {
+      "question": "How can the collapsing character of the pulse be exaggerated?",
+      "answer": "The collapsing character can be exaggerated at the radial artery by lifting the subject's arm above the level of his heart."
+    },
+    {
+      "question": "What is a bisferiens pulse?",
+      "answer": "This pulse is a combination of slow rising and collapsing pulse."
+    },
+    {
+      "question": "In what conditions does a bisferiens pulse occur?",
+      "answer": "This occurs when aortic stenosis and aortic incompetence are present simultaneously. A biphasic pulse with 2 systolic peaks occurs."
+    },
+    {
+      "question": "What is pulsus alternans (alternating pulse)?",
+      "answer": "This is a beat-to-beat variation in pulse volume in which strong ventricular beats alternate with weak beats, i.e.; alternating high and low systolic peaks; rhythm is normal."
+    },
+    {
+      "question": "What does pulsus alternans indicate?",
+      "answer": "It indicates severe left ventricular damage."
+    },
+    {
+      "question": "What is pulsus paradoxus (paradoxical pulse)?",
+      "answer": "It is an exaggeration of the normal inspiratory decrease in pulse volume and systolic pressure and is not truly paradoxical."
+    },
+    {
+      "question": "In what conditions is pulsus paradoxus seen?",
+      "answer": "Pericardial effusion\n\nConstrictive pericarditis\n\nSevere asthma"
+    },
+    {
+      "question": "Explain the mechanism of pulsus paradoxus.",
+      "answer": "Normally, pulse volume decreases during inspiration and increases during expiration due to intrathoracic (intrapleural) pressure changes affecting venous return. Inspiration -> ↓ (more negative) intrathoracic pressure -> ↑venous return -> ↑right ventricular stroke volume -> ↑left ventricular stroke volume (ventricular interdependence). Pericardial effusion causes cardiac tamponade, during inspiration, ↑ left ventricular filling -> ↓↓stroke volume -> ↓↓SBP. A/c severe asthma -> ↓↓ (more more negative) intrathoracic(intrapleural)pressure -> ↑afterload -> ↓left ventricular stroke volume."
+    },
+    {
+      "question": "What is the fourth characteristic of the arterial pulse to be assessed?",
+      "answer": "(d) Volume of the pulse"
+    },
+    {
+      "question": "What is the volume of the pulse?",
+      "answer": "The volume of the pulse is the amplitude of expansion of vessel wall produced by pulse wave."
+    },
+    {
+      "question": "What does the volume of the pulse depend on?",
+      "answer": "This gives a rough guide to the pulse pressure, which depends on stroke volume and the compliance of the arteries."
+    },
+    {
+      "question": "How is the volume of the arterial pulse assessed?",
+      "answer": "The volume of the arterial pulse can be assessed by palpating the radial artery. Note whether volume is normal, low, or high and equal on both sides."
+    },
+    {
+      "question": "What is the fifth characteristic of the arterial pulse to be assessed?",
+      "answer": "(e) Condition of vessel wall"
+    },
+    {
+      "question": "How is the condition of the vessel wall palpated?",
+      "answer": "Palpate for the vessel wall."
+    },
+    {
+      "question": "What is the normal condition of the vessel wall?",
+      "answer": "Normally it is not palpable, but in old age and atherosclerosis, the vessel wall is palpable."
+    },
+    {
+      "question": "What is the sixth characteristic of the arterial pulse to be assessed?",
+      "answer": "(f) Radio femoral delay / Brachio femoral delay"
+    },
+    {
+      "question": "What is a radio femoral delay?",
+      "answer": "Delay of the femoral pulse compared with the radial pulse."
+    },
+    {
+      "question": "What does a radio femoral delay indicate?",
+      "answer": "It occurs in coarctation of the aorta."
+    },
+    {
+      "question": "What is the seventh characteristic of the arterial pulse to be assessed?",
+      "answer": "(g) Other peripheral pulsations"
+    },
+    {
+      "question": "Why is it important to palpate other peripheral pulsations?",
+      "answer": "To see whether they are normal and equal on sides."
+    },
+    {
+      "question": "Which other peripheral pulsations should be examined?",
+      "answer": "Superficial temporal\n\nFacial\n\nCarotid\n\nBrachial\n\nUlnar\n\nEpigastric\n\nFemoral\n\nPopliteal\n\nPosterior tibial\n\nDorsalis pedis"
+    },
+    {
+      "question": "How are carotid artery pulsations examined?",
+      "answer": "Carotid artery pulsations can be examined at the angle of the jaw, anterior to the sternocleidomastoid muscle.\n\nExplain to the subject what you are going to do to avoid the subject to be supine (for fear of ill effects of reflex bradycardia in case it occurs).\n\nBoth the carotids should not be palpated simultaneously, otherwise, you may occlude the blood supply to the cerebrum.\n\nGently palpate the right carotid artery using the left thumb at the level of thyroid cartilage against transverse processes of cervical vertebrae.\n\nUse the right thumb to palpate the left carotid artery."
+    },
+    {
+      "question": "How are brachial artery pulsations examined?",
+      "answer": "Brachial artery pulsations can be examined in the antecubital fossa, medial to biceps tendon. The brachial artery lies deeper than the radial."
+    },
+    {
+      "question": "How are femoral artery pulsations examined?",
+      "answer": "Use your thumbs to palpate or with your fingers cupped around the top of the thighs.\n\nFor palpating femoral artery pulsations, explain to the subject what you are going to do and ask him to lie down.\n\nPlace your extended index and middle fingers below the inguinal ligament, at the mid-inguinal point (midway between anterior superior iliac spine and pubic symphysis), immediately lateral to the femoral vein and medial to the femoral nerve."
+    },
+    {
+      "question": "What are the steps involved in the clinical examination of the abdomen, in order?",
+      "answer": "1) Inspection\n2) Palpation\n3) Percussion\n4) Auscultation"
+    },
+    {
+      "question": "For convenience, how is the whole abdomen divided?",
+      "answer": "The whole abdomen is divided into nine areas by two vertical and two horizontal lines."
+    },
+    {
+      "question": "What are the nine areas the abdomen is divided into?",
+      "answer": "Right hypochondrium\n\nEpigastrium\n\nLeft hypochondrium\n\nRight lumbar region\n\nUmbilical region\n\nLeft lumbar region\n\nRight iliac fossa\n\nHypogastrium\n\nLeft iliac fossa"
+    },
+    {
+      "question": "What is the first step in the examination of the abdomen?",
+      "answer": "I. Inspection"
+    },
+    {
+      "question": "What does inspection of the abdomen involve?",
+      "answer": "Inspection involves a visual examination of the abdomen."
+    },
+    {
+      "question": "How should the patient be positioned for inspection of the abdomen?",
+      "answer": "The patient should lie flat on his back with the legs extended.\n\nThe whole abdomen from the nipples above to the saphenous openings down with the legs extended must be exposed.\n\nExamination should be carried out in good light, preferably in daylight."
+    },
+    {
+      "question": "What features should be noted during inspection of the abdomen?",
+      "answer": "1. Contour of the abdomen\n2. Position of umbilicus\n3. Movement of the abdominal wall\n4. Peristaltic movements\n5. Look for a pulsating swelling\n6. Discoloration\n7. Presence of prominent veins\n8. Inspect the groins, the penis and the scrotum of males"
+    },
+    {
+      "question": "What should be noted about the contour of the abdomen?",
+      "answer": "Normally the abdomen is flat.\n\nA sunken shape is seen in starvation or severe malnutrition.\n\nDistension of the abdomen is flat. A sunken shape is seen in starvation or severe malnutrition."
+    },
+    {
+      "question": "What are the \"5 F's\" that may cause distension of the abdomen?",
+      "answer": "Fat\n\nFluid\n\nFlatus\n\nFaeces\n\nFoetus (5 F's)"
+    },
+    {
+      "question": "What is the normal position of the umbilicus?",
+      "answer": "Normally umbilicus is slightly retracted and inverted."
+    },
+    {
+      "question": "What is the normal movement of the abdominal wall?",
+      "answer": "Normally there is gentle movement of the abdominal wall with respiration."
+    },
+    {
+      "question": "What does sluggish or no respiratory movement of the abdominal wall indicate?",
+      "answer": "It indicates widespread irritation of the peritoneum as occurs in diffuse peritonitis."
+    },
+    {
+      "question": "What might be observed regarding peristaltic movements in small bowel obstruction?",
+      "answer": "The characteristic 'ladder pattern' peristalsis may be found in small bowel obstruction."
+    },
+    {
+      "question": "How long should one watch for to detect visible peristalsis?",
+      "answer": "Watch patiently for a while to detect visible peristalsis."
+    },
+    {
+      "question": "Where might a pulsating swelling be visible on the abdomen?",
+      "answer": "The visible pulsation of the abdominal aorta in the epigastrium is a frequent finding in thin individuals."
+    },
+    {
+      "question": "What do specific discolorations around the abdomen indicate?",
+      "answer": "Discoloration in the left flank (Grey Turner's sign) and bluish hue around the umbilicus (Cullen's sign) are occasionally seen in late cases of acute pancreatitis."
+    },
+    {
+      "question": "What does the presence of prominent, distended veins around the umbilicus, abdomen, and chest wall indicate?",
+      "answer": "Distended veins around the umbilicus are seen in portal hypertension. Distended veins over the abdomen and chest wall are seen in the obstruction of the inferior vena cava."
+    },
+    {
+      "question": "What should be inspected in the groins, penis, and scrotum of males?",
+      "answer": "Inspect for any swelling. Ensure that both testes are in their normal position."
+    },
+    {
+      "question": "What is the second step in the examination of the abdomen?",
+      "answer": "II. Palpation"
+    },
+    {
+      "question": "How should the patient and examiner be positioned for palpation of the abdomen?",
+      "answer": "The subject should lie flat on his back, and breathe quietly.\n\nThe examiner should sit or kneel on the right side of the patient and use the volar surfaces of the fingers.\n\nThe forearm should be kept horizontal.\n\nThe fingers are placed flat on the abdominal wall; they must not be held vertically to poke the abdominal wall."
+    },
+    {
+      "question": "What can rough palpation lead to, and how can it be avoided?",
+      "answer": "Rough palpation will lead to voluntary contraction of the abdominal muscles of the patient and this will stand in the way of obtaining the right information from palpation.\n\nThe examiner must keep his hands warm before palpation of the abdomen. This will gain the confidence of the patient."
+    },
+    {
+      "question": "How should palpation of the abdomen be performed systematically?",
+      "answer": "Start in the right iliac fossa and palpate anti-clockwise to the end of the suprapubic region. Gently palpate each quadrant noting any area of tenderness, rigidity, or swellings."
+    },
+    {
+      "question": "What is the finding of a normal palpation of the abdomen?",
+      "answer": "Normally palpation of the abdomen is painless and gives an elastic or doughy feeling."
+    },
+    {
+      "question": "What specific features should be looked for during palpation?",
+      "answer": "Hyperesthesia\n\nTenderness\n\nAppendicular tenderness\n\nRebound tenderness"
+    },
+    {
+      "question": "What is hyperesthesia and how can it be obtained?",
+      "answer": "Hyperesthesia is spontaneous cutaneous hypersensitivity that can be obtained due to the presence of an inflamed abdominal organ underneath."
+    },
+    {
+      "question": "How can hyperesthesia be elicited?",
+      "answer": "It can be elicited by gently picking up a fold of skin and lifting it off the abdomen or by simply scratching the abdominal wall with the finger."
+    },
+    {
+      "question": "What is tenderness and how is the site of maximum tenderness best proven?",
+      "answer": "Tenderness is constant over an inflamed organ. Ask the patient to point out the site of pain (Pointing test). If this proves to be the site of maximum tenderness, it is certainly the site of diseased viscus."
+    },
+    {
+      "question": "What is a good practice to ask the patient to do before palpating a tender area?",
+      "answer": "It is a good practice to ask the patient to show the tender area."
+    },
+    {
+      "question": "How is appendicular tenderness best elicited?",
+      "answer": "Appendicular tenderness can be best elicited in the left lateral position when the viscera shifts to the left exposing the appendix to direct palpation. The abdominal wall also becomes relaxed in this position."
+    },
+    {
+      "question": "What is rebound tenderness (Blumberg's sign or Release sign)?",
+      "answer": "This is mainly a sign of peritonitis due to the presence of an inflamed organ underneath."
+    },
+    {
+      "question": "How is rebound tenderness elicited?",
+      "answer": "The suspected area is palpated and with each expiration, the hand on the abdomen is gradually pressed down. Then the hand is withdrawn suddenly and completely."
+    },
+    {
+      "question": "What is the result of a positive rebound tenderness test?",
+      "answer": "As a result of this abrupt removal, the abdominal musculature springs back into its original place. The patient will immediately cry out or at least wince in pain."
+    },
+    {
+      "question": "What is the mechanism of pain in rebound tenderness?",
+      "answer": "This is because the parietal peritoneum which has already been inflamed due to the presence of an underlying inflamed organ also springs back along with the abdominal muscles."
+    },
+    {
+      "question": "What major structures/organs should be specifically palpated in the abdomen?",
+      "answer": "3. Palpation of liver\n\n4. Palpation of spleen\n\n5. Palpation for Kidneys\n\n6. Distension\n\n7. Lump\n\n8. Examine the hernia sites"
+    },
+    {
+      "question": "Is the normal liver palpable in adults?",
+      "answer": "In adults the normal liver is not palpable. Only when the liver is pathologically enlarged it may become palpable under the right costal margin."
+    },
+    {
+      "question": "How is an enlarged liver palpated?",
+      "answer": "To palpate for an enlarged liver, one should place the hand on the right iliac fossa with the fingers pointing towards the left axilla (that means parallel to the right costal margin).\n\nIf nothing abnormal is felt, the subject is asked to take deep breaths in and out.\n\nEvery time the subject expires, slide the hand a little towards the right costal margin.\n\nThis is carried on till the edge of an enlarged liver strikes the lateral margin of the hand when the subject inspires."
+    },
+    {
+      "question": "What is enlargement of the liver called, and in what conditions may it be seen?",
+      "answer": "Enlargement of the liver is called hepatomegaly and may be seen in hepatitis, carcinoma liver, etc."
+    },
+    {
+      "question": "Is the normal spleen palpable?",
+      "answer": "A normal spleen is not palpable. The spleen must be nearly two times larger than its normal size to be detected by clinical examination."
+    },
+    {
+      "question": "How can an enlarged spleen be identified on palpation?",
+      "answer": "When enlarged it extends from the left costal margin to the right iliac fossa.\n\nIt moves freely with respiration.\n\nSplenic swelling has a sharp anterior border, where one or two notches can be felt."
+    },
+    {
+      "question": "How is the spleen palpated?",
+      "answer": "For palpation - The right hand of the examiner is placed parallel to the left costal margin at the level of the umbilicus and the subject is asked to breathe in and out.\n\nThe left hand is kept behind the left lower ribs and slides the skin downwards so that the right hand gets an extra bit of skin to insinuate beneath the left costal margin.\n\nDuring expirations, gradually slide the hand towards the left costal margin till the splenic swelling touches the ulnar border of the index finger during inspiration.\n\nAn enlarged spleen appears just below the tip of the 10th rib."
+    },
+    {
+      "question": "How are the kidneys palpated?",
+      "answer": "Palpation for the kidneys is bimanual palpation.\n\nThe right hand is placed anteriorly in the lumbar region while the left hand is placed posteriorly in the loin.\n\nAsk the subject to take a deep breath in, and press the left hand forward, and the right hand upwards and inwards."
+    },
+    {
+      "question": "Is the normal kidney usually palpable?",
+      "answer": "The kidney is not usually palpable except for the lower pole, which is felt as a smooth, rounded firm swelling between both the right and left hands."
+    },
+    {
+      "question": "How can a kidney be differentiated from other structures on palpation?",
+      "answer": "It can be pushed from one hand to the other and it descends on deep inspiration."
+    },
+    {
+      "question": "What does generalized distension of the abdomen indicate in acute intestinal obstruction?",
+      "answer": "Generalized distension of the abdomen is a late feature of general peritonitis and the subject must not be allowed to reach that stage under any circumstances."
+    },
+    {
+      "question": "What should be noted if a lump is palpated in the abdomen?",
+      "answer": "Carefully palpate for any lump in all quadrants noting its position, size, shape, consistency, and mobility."
+    },
+    {
+      "question": "What are some examples of specific lumps that can be felt in the abdomen?",
+      "answer": "The appendicular lump may be felt in the right iliac fossa.\n\nCold abscesses and interstitial hernia also produce lumps and should be differentiated.\n\nIn intussusception, a sausage-shaped lump may be felt in the epigastrium or left lumbar region."
+    },
+    {
+      "question": "What should be examined at the hernia sites?",
+      "answer": "Examine the hernia sites for any swellings."
+    },
+    {
+      "question": "What is the third step in the examination of the abdomen?",
+      "answer": "III. Percussion"
+    },
+    {
+      "question": "What can light percussion be employed to detect?",
+      "answer": "Light Percussion may be employed to elicit local tenderness."
+    },
+    {
+      "question": "What is the next sub-section under Percussion?",
+      "answer": "Defining the boundaries of abdominal organs"
+    },
+    {
+      "question": "How are the boundaries of the liver defined by percussion?",
+      "answer": "The upper and the lower borders of the right lobe of the liver can be defined accurately by percussion.\n\nStart anteriorly in the fourth intercostal space, where the note will be resonant over the lungs, and work vertically downwards.\n\nIn the normal liver the upper border is at the 5th intercostal space, where the note will become dull.\n\nThis dullness extends down to the lower border formed by the right subcostal margin."
+    },
+    {
+      "question": "What can reduce the normal dullness over the liver?",
+      "answer": "The normal dullness over the upper part of the liver is reduced in severe emphysema, large pneumothorax, and the presence of gas or air in the peritoneal cavity left lower ribs into the left hypochondrium and liver."
+    },
+    {
+      "question": "Where does the spleen's dullness extend from?",
+      "answer": "Its dullness extends from the left lumbar region."
+    },
+    {
+      "question": "What does \"shifting dullness\" test for?",
+      "answer": "The presence of free fluid in the peritoneal cavity."
+    },
+    {
+      "question": "How is the test for shifting dullness performed?",
+      "answer": "It can be determined by eliciting shifting dullness.\n\nWhen the subject lies on his back the fluid gravitates down to the flanks and the intestine floats on the center of the abdomen which will therefore be resonant and the flanks dull.\n\nPercussion should be commenced from the center of the abdomen and is carried down to one flank.\n\nAt the point where dullness starts, the finger is kept in its position and the subject is asked to turn to the opposite side.\n\nThat particular area is again percussed after waiting for a few minutes to allow the fluid to gravitate down. Now the note will be resonant to make the shifting dullness test positive."
+    },
+    {
+      "question": "What does a \"fluid thrill\" test for?",
+      "answer": "It tests for ascites (free fluid in the abdomen)."
+    },
+    {
+      "question": "How is the test for a fluid thrill performed?",
+      "answer": "When the patient is lying in the supine position, one hand of the examiner is placed over the lumbar region on one side.\n\nThe opposite side of the abdomen is flicked or tapped with the fingers of the opposite hand.\n\nA distinct vibration is felt on the palpating hand if ascites is present."
+    },
+    {
+      "question": "How can you avoid false positives when testing for a fluid thrill?",
+      "answer": "During the test, an assistant is asked to place the ulnar border of his hand firmly in the midline of the abdomen to avoid impulse transmission through fat."
+    },
+    {
+      "question": "What is the fourth step in the examination of the abdomen?",
+      "answer": "IV. Auscultation"
+    },
+    {
+      "question": "What should the student be familiar with regarding auscultation of the abdomen?",
+      "answer": "The student should be familiar with normal peristaltic sounds noting their character and frequency by studying them in healthy abdomen."
+    },
+    {
+      "question": "How is auscultation of the abdomen performed?",
+      "answer": "One must listen for several minutes and a stethoscope should be placed on one portion of the abdominal wall without moving."
+    },
+    {
+      "question": "What is the \"silent abdomen\" and what does it signify?",
+      "answer": "The 'silent abdomen' is a pathognomonic feature of diffuse peritonitis. Even localized absence of peristaltic sound will be evident around acute inflammation of the organ concerned."
+    },
+    {
+      "question": "What is the \"noisy abdomen\" and what does it signify?",
+      "answer": "On the contrary, a 'noisy abdomen' is a feature of acute intestinal obstruction. Normal intestinal sound is heard as clicks and gurgles but in intestinal obstruction distinct metallic tinkles or 'borborygmi' is heard."
+    },
+    {
+      "question": "What is the final inference from the physical examination of the abdomen?",
+      "answer": "Inference: On physical examination, the abdomen of the given subject was found to be within normal limits."
+    },
+    {
+      "question": "What is the topic after \"Other peripheral pulsations\" and before \"Clubbing\"?",
+      "answer": "4. Cyanosis"
+    },
+    {
+      "question": "What is cyanosis?",
+      "answer": "Cyanosis is the bluish discoloration of the skin and mucous membrane due to increased deoxyhemoglobin concentration above 5g% in capillary blood."
+    },
+    {
+      "question": "What are the two types of cyanosis?",
+      "answer": "Central cyanosis\n\nPeripheral cyanosis"
+    },
+    {
+      "question": "What is central cyanosis due to?",
+      "answer": "Central cyanosis is due to a reduction in PO2 in arterial blood."
+    },
+    {
+      "question": "What conditions can cause
+Error generating flashcards: Error: Failed to parse AI response as JSON: Unexpected token '`', "```json
+{
+"... is not valid JSON. Raw output: ```json
+{
+  "flashcards": [
+    {
+      "question": "What is the aim of Experiment 3?",
+      "answer": "To examine and report on the cardiovascular system of the subject."
+    },
+    {
+      "question": "What are the requirements for the examination of the cardiovascular system in Experiment 3?",
+      "answer": "Stethoscope\n\nSphygmomanometer\n\nTwo rulers"
+    },
+    {
+      "question": "What is the first major section in the examination of the cardiovascular system?",
+      "answer": "I. General Examination"
+    },
+    {
+      "question": "What should precede any systemic examination in a cardiovascular assessment?",
+      "answer": "A general examination."
+    },
+    {
+      "question": "What points that have relevance in the cardiovascular system should be given major significance and examined first in the general examination?",
+      "answer": "Dyspnea\n\nCyanosis\n\nPulse\n\nBP (Blood Pressure)\n\nClubbing\n\nEdema"
+    },
+    {
+      "question": "What is the second major section in the examination of the cardiovascular system?",
+      "answer": "II. Systemic Examination"
+    },
+    {
+      "question": "What is the prescribed order for the systemic examination of the cardiovascular system?",
+      "answer": "1. Arterial pulse\n2. Measurement of Blood pressure\n3. Examination of jugular venous pulse and pressure\n4. Examination of the chest and precordium"
+    },
+    {
+      "question": "What is the first step in the systemic examination of the cardiovascular system?",
+      "answer": "1. Arterial pulse"
+    },
+    {
+      "question": "What aspects of the arterial pulse should be examined in detail?",
+      "answer": "a) Rate\nb) Rhythm\nc) Character\nd) Volume\ne) Condition of the vessel wall\nf) Radio femoral delay\ng) Other peripheral pulsations"
+    },
+    {
+      "question": "What is the arterial pulse?",
+      "answer": "Arterial pulse is the palpable expansile pressure wave transmitted along the arterial walls due to the left ventricular pumping of blood into an already-filled aorta."
+    },
+    {
+      "question": "How is the arterial pulse expanded?",
+      "answer": "The pressure wave expands the arterial walls and the expansion is palpable as the pulse."
+    },
+    {
+      "question": "How is the arterial pulse palpated?",
+      "answer": "Arterial pulses are palpated by compressing the artery against a firm underlying structure, usually a bone."
+    },
+    {
+      "question": "How is the radial pulse specifically palpated?",
+      "answer": "The rate and rhythm of the arterial pulse is palpated at the wrist, over the radial artery due to its easily accessible superficial position overlying a bony prominence against which it can be compressed.\n\nThe examiner should stand on the right side of the subject.\n\nSlightly flex the subject's semi-pronated forearm at the elbow and wrist.\n\nSupport the subject's right hand with your right hand, and palpate the radial artery lateral to the flexor carpi radialis tendon by gently compressing the radial artery against the head of radius using the tips of index, middle and ring fingers of your left hand."
+    },
+    {
+      "question": "What is the first characteristic of the arterial pulse to be assessed?",
+      "answer": "(a) Rate"
+    },
+    {
+      "question": "How is the pulse rate measured?",
+      "answer": "The pulse rate is counted for 1 minute and the subject should be well relaxed."
+    },
+    {
+      "question": "What is the normal pulse rate at rest?",
+      "answer": "Normal pulse rate is 60-100 per minute at rest."
+    },
+    {
+      "question": "What is tachycardia?",
+      "answer": "Tachycardia: Pulse rate > 100/min."
+    },
+    {
+      "question": "What is bradycardia?",
+      "answer": "Bradycardia: Pulse rate < 60/min."
+    },
+    {
+      "question": "What are the physiological conditions in which pulse rate is increased?",
+      "answer": "Exercise\n\nAnger\n\nEmotional excitement\n\nAfter meals\n\nChildren\n\nIntrauterine life (because vagal tone is not fully developed)\n\nPregnancy"
+    },
+    {
+      "question": "What are the pathological conditions in which pulse rate is increased?",
+      "answer": "Fever (increase in body temperature directly stimulates the SA node. Heart rate increases by 10/min for every 1°F increase or by 18/min for every 1°C increase)\n\nHyperthyroidism\n\nHemorrhage\n\nHypovolemia and shock\n\nAnemia\n\nPain\n\nTachyarrhythmias\n\nSeptic infections\n\nDrugs: Atropine (blocks the parasympathetic effects), Beta-adrenergic receptor agonists (adrenaline, isoprenaline, ephedrine, etc.)"
+    },
+    {
+      "question": "What are the physiological conditions in which pulse rate is decreased?",
+      "answer": "Trained athletes (due to greater vagal tone and greater stroke volume)\n\nFear\n\nGrief\n\nVery old age\n\nDuring sleep"
+    },
+    {
+      "question": "What are the pathological conditions in which pulse rate is decreased?",
+      "answer": "Hypothyroidism\n\nTyphoid (enteric) fever\n\nHeart block\n\nObstructive jaundice (due to inhibition of SA node by bile salts)\n\nIncreased intracranial pressure (with activates Cushing's reflex to increase arterial BP which in turn will then activate Sino aortic reflex mechanism resulting in bradycardia)\n\nDrugs: Beta-adrenergic receptor blockers (e.g. propanolol, atenolol), digitalis glycosides (stimulate vagal nuclei in the medulla to cause bradycardia)"
+    },
+    {
+      "question": "What is a pulse deficit?",
+      "answer": "In cases of atrial fibrillation, the pulse rate counted at the wrist will be less than the heart rate. This difference is referred to as pulse deficit."
+    },
+    {
+      "question": "When does a pulse deficit occur?",
+      "answer": "This occurs when some of the ventricular systoles are so weak that the stroke volume is insufficient to generate pulse waves in the arterial wall."
+    },
+    {
+      "question": "How is a pulse deficit detected?",
+      "answer": "Pulse deficit is detected by simultaneous checking of pulse rate by one person and heart rate by another person."
+    },
+    {
+      "question": "What is the second characteristic of the arterial pulse to be assessed?",
+      "answer": "(b) Rhythm"
+    },
+    {
+      "question": "What is the rhythm of the pulse?",
+      "answer": "The regularity with which one beat follows the other. Irregularity is the unequal spacing of beats."
+    },
+    {
+      "question": "What should be noted about the pulse rhythm?",
+      "answer": "Note whether the rhythm is regular or irregular. Normal rhythm is regular. If it is irregular, note whether irregularly irregular or regularly irregular."
+    },
+    {
+      "question": "What is a regularly irregular pulse?",
+      "answer": "A regularly irregular pulse is characteristic of an extrasystole."
+    },
+    {
+      "question": "What is an irregularly irregular pulse?",
+      "answer": "An irregularly irregular pulse is characteristic of atrial fibrillation."
+    },
+    {
+      "question": "How should you examine for a pulse of atrial fibrillation?",
+      "answer": "If the pulse is irregular, examine for pulse deficit. The heart rate has to be auscultated by the skilled assistant or the nurse while you count the pulse rate for the same minute."
+    },
+    {
+      "question": "What is the normal rhythm of cardiac activity called?",
+      "answer": "The normal rhythm of cardiac activity is called the normal sinus rhythm (NSR) because it originates in the SA node."
+    },
+    {
+      "question": "What is sinus arrhythmia?",
+      "answer": "The normal variation of heart rate with the phases of respiration is called sinus arrhythmia."
+    },
+    {
+      "question": "What causes sinus arrhythmia?",
+      "answer": "Heart rate increases during inspiration and decreases during expiration. This occurs because the tonic inhibitory parasympathetic discharges from the medullary cardio-inhibitory area through the Vagus nerve to the heart decrease during inspiration and increase during expiration."
+    },
+    {
+      "question": "What is the third characteristic of the arterial pulse to be assessed?",
+      "answer": "(c) Character"
+    },
+    {
+      "question": "How is the character of the pulse studied?",
+      "answer": "This is studied by palpation of the right carotid pulse. It is the pulse closest to the heart and least subject to damping and distortion in the arterial tree."
+    },
+    {
+      "question": "How is the carotid pulse best felt?",
+      "answer": "It is best felt with the thumb pressing backward at the medial border of the right sternomastoid muscle at the level of the thyroid cartilage."
+    },
+    {
+      "question": "Why should you never palpate the carotid on both sides simultaneously?",
+      "answer": "It will occlude the blood supply to the brain."
+    },
+    {
+      "question": "What mainly determines the character of the pulse?",
+      "answer": "The character of the pulse is affected mainly by waveform and to a lesser extent by volume."
+    },
+    {
+      "question": "Describe a normal arterial pulse tracing.",
+      "answer": "A normal arterial pulse tracing has an upstroke and a downstroke. On the peak, is the percussion wave followed by a tidal wave and dicrotic notch on the down stroke."
+    },
+    {
+      "question": "What does an abnormal pulse character indicate?",
+      "answer": "In certain diseases, the character of the pulse is detectably abnormal."
+    },
+    {
+      "question": "What is a slow-rising or anacrotic pulse?",
+      "answer": "This is typically a small volume pulse with a late systolic peak."
+    },
+    {
+      "question": "In what condition is a slow-rising or anacrotic pulse seen?",
+      "answer": "This is seen in aortic stenosis."
+    },
+    {
+      "question": "What is a collapsing or water hammer pulse or Corrigan pulse?",
+      "answer": "This is characterized by rapid upstroke and descent of the pulse wave."
+    },
+    {
+      "question": "In what condition does a collapsing pulse most often occur?",
+      "answer": "It occurs most often in aortic regurgitation."
+    },
+    {
+      "question": "How can the collapsing character of the pulse be exaggerated?",
+      "answer": "The collapsing character can be exaggerated at the radial artery by lifting the subject's arm above the level of his heart."
+    },
+    {
+      "question": "What is a bisferiens pulse?",
+      "answer": "This pulse is a combination of slow rising and collapsing pulse."
+    },
+    {
+      "question": "In what conditions does a bisferiens pulse occur?",
+      "answer": "This occurs when aortic stenosis and aortic incompetence are present simultaneously. A biphasic pulse with 2 systolic peaks occurs."
+    },
+    {
+      "question": "What is pulsus alternans (alternating pulse)?",
+      "answer": "This is a beat-to-beat variation in pulse volume in which strong ventricular beats alternate with weak beats, i.e.; alternating high and low systolic peaks; rhythm is normal."
+    },
+    {
+      "question": "What does pulsus alternans indicate?",
+      "answer": "It indicates severe left ventricular damage."
+    },
+    {
+      "question": "What is pulsus paradoxus (paradoxical pulse)?",
+      "answer": "It is an exaggeration of the normal inspiratory decrease in pulse volume and systolic pressure and is not truly paradoxical."
+    },
+    {
+      "question": "In what conditions is pulsus paradoxus seen?",
+      "answer": "Pericardial effusion\n\nConstrictive pericarditis\n\nSevere asthma"
+    },
+    {
+      "question": "Explain the mechanism of pulsus paradoxus.",
+      "answer": "Normally, pulse volume decreases during inspiration and increases during expiration due to intrathoracic (intrapleural) pressure changes affecting venous return. Inspiration -> ↓ (more negative) intrathoracic pressure -> ↑venous return -> ↑right ventricular stroke volume -> ↑left ventricular stroke volume (ventricular interdependence). Pericardial effusion causes cardiac tamponade, during inspiration, ↑ left ventricular filling -> ↓↓stroke volume -> ↓↓SBP. A/c severe asthma -> ↓↓ (more more negative) intrathoracic(intrapleural)pressure -> ↑afterload -> ↓left ventricular stroke volume."
+    },
+    {
+      "question": "What is the fourth characteristic of the arterial pulse to be assessed?",
+      "answer": "(d) Volume of the pulse"
+    },
+    {
+      "question": "What is the volume of the pulse?",
+      "answer": "The volume of the pulse is the amplitude of expansion of vessel wall produced by pulse wave."
+    },
+    {
+      "question": "What does the volume of the pulse depend on?",
+      "answer": "This gives a rough guide to the pulse pressure, which depends on stroke volume and the compliance of the arteries."
+    },
+    {
+      "question": "How is the volume of the arterial pulse assessed?",
+      "answer": "The volume of the arterial pulse can be assessed by palpating the radial artery. Note whether volume is normal, low, or high and equal on both sides."
+    },
+    {
+      "question": "What is the fifth characteristic of the arterial pulse to be assessed?",
+      "answer": "(e) Condition of vessel wall"
+    },
+    {
+      "question": "How is the condition of the vessel wall palpated?",
+      "answer": "Palpate for the vessel wall."
+    },
+    {
+      "question": "What is the normal condition of the vessel wall?",
+      "answer": "Normally it is not palpable, but in old age and atherosclerosis, the vessel wall is palpable."
+    },
+    {
+      "question": "What is the sixth characteristic of the arterial pulse to be assessed?",
+      "answer": "(f) Radio femoral delay / Brachio femoral delay"
+    },
+    {
+      "question": "What is a radio femoral delay?",
+      "answer": "Delay of the femoral pulse compared with the radial pulse."
+    },
+    {
+      "question": "What does a radio femoral delay indicate?",
+      "answer": "It occurs in coarctation of the aorta."
+    },
+    {
+      "question": "What is the seventh characteristic of the arterial pulse to be assessed?",
+      "answer": "(g) Other peripheral pulsations"
+    },
+    {
+      "question": "Why is it important to palpate other peripheral pulsations?",
+      "answer": "To see whether they are normal and equal on sides."
+    },
+    {
+      "question": "Which other peripheral pulsations should be examined?",
+      "answer": "Superficial temporal\n\nFacial\n\nCarotid\n\nBrachial\n\nUlnar\n\nEpigastric\n\nFemoral\n\nPopliteal\n\nPosterior tibial\n\nDorsalis pedis"
+    },
+    {
+      "question": "How are carotid artery pulsations examined?",
+      "answer": "Carotid artery pulsations can be examined at the angle of the jaw, anterior to the sternocleidomastoid muscle.\n\nExplain to the subject what you are going to do to avoid the subject to be supine (for fear of ill effects of reflex bradycardia in case it occurs).\n\nBoth the carotids should not be palpated simultaneously, otherwise, you may occlude the blood supply to the cerebrum.\n\nGently palpate the right carotid artery using the left thumb at the level of thyroid cartilage against transverse processes of cervical vertebrae.\n\nUse the right thumb to palpate the left carotid artery."
+    },
+    {
+      "question": "How are brachial artery pulsations examined?",
+      "answer": "Brachial artery pulsations can be examined in the antecubital fossa, medial to biceps tendon. The brachial artery lies deeper than the radial."
+    },
+    {
+      "question": "How are femoral artery pulsations examined?",
+      "answer": "Use your thumbs to palpate or with your fingers cupped around the top of the thighs.\n\nFor palpating femoral artery pulsations, explain to the subject what you are going to do and ask him to lie down.\n\nPlace your extended index and middle fingers below the inguinal ligament, at the mid-inguinal point (midway between anterior superior iliac spine and pubic symphysis), immediately lateral to the femoral vein and medial to the femoral nerve."
+    },
+    {
+      "question": "What are the steps involved in the clinical examination of the abdomen, in order?",
+      "answer": "1) Inspection\n2) Palpation\n3) Percussion\n4) Auscultation"
+    },
+    {
+      "question": "For convenience, how is the whole abdomen divided?",
+      "answer": "The whole abdomen is divided into nine areas by two vertical and two horizontal lines."
+    },
+    {
+      "question": "What are the nine areas the abdomen is divided into?",
+      "answer": "Right hypochondrium\n\nEpigastrium\n\nLeft hypochondrium\n\nRight lumbar region\n\nUmbilical region\n\nLeft lumbar region\n\nRight iliac fossa\n\nHypogastrium\n\nLeft iliac fossa"
+    },
+    {
+      "question": "What is the first step in the examination of the abdomen?",
+      "answer": "I. Inspection"
+    },
+    {
+      "question": "What does inspection of the abdomen involve?",
+      "answer": "Inspection involves a visual examination of the abdomen."
+    },
+    {
+      "question": "How should the patient be positioned for inspection of the abdomen?",
+      "answer": "The patient should lie flat on his back with the legs extended.\n\nThe whole abdomen from the nipples above to the saphenous openings down with the legs extended must be exposed.\n\nExamination should be carried out in good light, preferably in daylight."
+    },
+    {
+      "question": "What features should be noted during inspection of the abdomen?",
+      "answer": "1. Contour of the abdomen\n2. Position of umbilicus\n3. Movement of the abdominal wall\n4. Peristaltic movements\n5. Look for a pulsating swelling\n6. Discoloration\n7. Presence of prominent veins\n8. Inspect the groins, the penis and the scrotum of males"
+    },
+    {
+      "question": "What should be noted about the contour of the abdomen?",
+      "answer": "Normally the abdomen is flat.\n\nA sunken shape is seen in starvation or severe malnutrition.\n\nDistension of the abdomen is flat. A sunken shape is seen in starvation or severe malnutrition."
+    },
+    {
+      "question": "What are the \"5 F's\" that may cause distension of the abdomen?",
+      "answer": "Fat\n\nFluid\n\nFlatus\n\nFaeces\n\nFoetus (5 F's)"
+    },
+    {
+      "question": "What is the normal position of the umbilicus?",
+      "answer": "Normally umbilicus is slightly retracted and inverted."
+    },
+    {
+      "question": "What is the normal movement of the abdominal wall?",
+      "answer": "Normally there is gentle movement of the abdominal wall with respiration."
+    },
+    {
+      "question": "What does sluggish or no respiratory movement of the abdominal wall indicate?",
+      "answer": "It indicates widespread irritation of the peritoneum as occurs in diffuse peritonitis."
+    },
+    {
+      "question": "What might be observed regarding peristaltic movements in small bowel obstruction?",
+      "answer": "The characteristic 'ladder pattern' peristalsis may be found in small bowel obstruction."
+    },
+    {
+      "question": "How long should one watch for to detect visible peristalsis?",
+      "answer": "Watch patiently for a while to detect visible peristalsis."
+    },
+    {
+      "question": "Where might a pulsating swelling be visible on the abdomen?",
+      "answer": "The visible pulsation of the abdominal aorta in the epigastrium is a frequent finding in thin individuals."
+    },
+    {
+      "question": "What do specific discolorations around the abdomen indicate?",
+      "answer": "Discoloration in the left flank (Grey Turner's sign) and bluish hue around the umbilicus (Cullen's sign) are occasionally seen in late cases of acute pancreatitis."
+    },
+    {
+      "question": "What does the presence of prominent, distended veins around the umbilicus, abdomen, and chest wall indicate?",
+      "answer": "Distended veins around the umbilicus are seen in portal hypertension. Distended veins over the abdomen and chest wall are seen in the obstruction of the inferior vena cava."
+    },
+    {
+      "question": "What should be inspected in the groins, penis, and scrotum of males?",
+      "answer": "Inspect for any swelling. Ensure that both testes are in their normal position."
+    },
+    {
+      "question": "What is the second step in the examination of the abdomen?",
+      "answer": "II. Palpation"
+    },
+    {
+      "question": "How should the patient and examiner be positioned for palpation of the abdomen?",
+      "answer": "The subject should lie flat on his back, and breathe quietly.\n\nThe examiner should sit or kneel on the right side of the patient and use the volar surfaces of the fingers.\n\nThe forearm should be kept horizontal.\n\nThe fingers are placed flat on the abdominal wall; they must not be held vertically to poke the abdominal wall."
+    },
+    {
+      "question": "What can rough palpation lead to, and how can it be avoided?",
+      "answer": "Rough palpation will lead to voluntary contraction of the abdominal muscles of the patient and this will stand in the way of obtaining the right information from palpation.\n\nThe examiner must keep his hands warm before palpation of the abdomen. This will gain the confidence of the patient."
+    },
+    {
+      "question": "How should palpation of the abdomen be performed systematically?",
+      "answer": "Start in the right iliac fossa and palpate anti-clockwise to the end of the suprapubic region. Gently palpate each quadrant noting any area of tenderness, rigidity, or swellings."
+    },
+    {
+      "question": "What is the finding of a normal palpation of the abdomen?",
+      "answer": "Normally palpation of the abdomen is painless and gives an elastic or doughy feeling."
+    },
+    {
+      "question": "What specific features should be looked for during palpation?",
+      "answer": "Hyperesthesia\n\nTenderness\n\nAppendicular tenderness\n\nRebound tenderness"
+    },
+    {
+      "question": "What is hyperesthesia and how can it be obtained?",
+      "answer": "Hyperesthesia is spontaneous cutaneous hypersensitivity that can be obtained due to the presence of an inflamed abdominal organ underneath."
+    },
+    {
+      "question": "How can hyperesthesia be elicited?",
+      "answer": "It can be elicited by gently picking up a fold of skin and lifting it off the abdomen or by simply scratching the abdominal wall with the finger."
+    },
+    {
+      "question": "What is tenderness and how is the site of maximum tenderness best proven?",
+      "answer": "Tenderness is constant over an inflamed organ. Ask the patient to point out the site of pain (Pointing test). If this proves to be the site of maximum tenderness, it is certainly the site of diseased viscus."
+    },
+    {
+      "question": "What is a good practice to ask the patient to do before palpating a tender area?",
+      "answer": "It is a good practice to ask the patient to show the tender area."
+    },
+    {
+      "question": "How is appendicular tenderness best elicited?",
+      "answer": "Appendicular tenderness can be best elicited in the left lateral position when the viscera shifts to the left exposing the appendix to direct palpation. The abdominal wall also becomes relaxed in this position."
+    },
+    {
+      "question": "What is rebound tenderness (Blumberg's sign or Release sign)?",
+      "answer": "This is mainly a sign of peritonitis due to the presence of an inflamed organ underneath."
+    },
+    {
+      "question": "How is rebound tenderness elicited?",
+      "answer": "The suspected area is palpated and with each expiration, the hand on the abdomen is gradually pressed down. Then the hand is withdrawn suddenly and completely."
+    },
+    {
+      "question": "What is the result of a positive rebound tenderness test?",
+      "answer": "As a result of this abrupt removal, the abdominal musculature springs back into its original place. The patient will immediately cry out or at least wince in pain."
+    },
+    {
+      "question": "What is the mechanism of pain in rebound tenderness?",
+      "answer": "This is because the parietal peritoneum which has already been inflamed due to the presence of an underlying inflamed organ also springs back along with the abdominal muscles."
+    },
+    {
+      "question": "What major structures/organs should be specifically palpated in the abdomen?",
+      "answer": "3. Palpation of liver\n\n4. Palpation of spleen\n\n5. Palpation for Kidneys\n\n6. Distension\n\n7. Lump\n\n8. Examine the hernia sites"
+    },
+    {
+      "question": "Is the normal liver palpable in adults?",
+      "answer": "In adults the normal liver is not palpable. Only when the liver is pathologically enlarged it may become palpable under the right costal margin."
+    },
+    {
+      "question": "How is an enlarged liver palpated?",
+      "answer": "To palpate for an enlarged liver, one should place the hand on the right iliac fossa with the fingers pointing towards the left axilla (that means parallel to the right costal margin).\n\nIf nothing abnormal is felt, the subject is asked to take deep breaths in and out.\n\nEvery time the subject expires, slide the hand a little towards the right costal margin.\n\nThis is carried on till the edge of an enlarged liver strikes the lateral margin of the hand when the subject inspires."
+    },
+    {
+      "question": "What is enlargement of the liver called, and in what conditions may it be seen?",
+      "answer": "Enlargement of the liver is called hepatomegaly and may be seen in hepatitis, carcinoma liver, etc."
+    },
+    {
+      "question": "Is the normal spleen palpable?",
+      "answer": "A normal spleen is not palpable. The spleen must be nearly two times larger than its normal size to be detected by clinical examination."
+    },
+    {
+      "question": "How can an enlarged spleen be identified on palpation?",
+      "answer": "When enlarged it extends from the left costal margin to the right iliac fossa.\n\nIt moves freely with respiration.\n\nSplenic swelling has a sharp anterior border, where one or two notches can be felt."
+    },
+    {
+      "question": "How is the spleen palpated?",
+      "answer": "For palpation - The right hand of the examiner is placed parallel to the left costal margin at the level of the umbilicus and the subject is asked to breathe in and out.\n\nThe left hand is kept behind the left lower ribs and slides the skin downwards so that the right hand gets an extra bit of skin to insinuate beneath the left costal margin.\n\nDuring expirations, gradually slide the hand towards the left costal margin till the splenic swelling touches the ulnar border of the index finger during inspiration.\n\nAn enlarged spleen appears just below the tip of the 10th rib."
+    },
+    {
+      "question": "How are the kidneys palpated?",
+      "answer": "Palpation for the kidneys is bimanual palpation.\n\nThe right hand is placed anteriorly in the lumbar region while the left hand is placed posteriorly in the loin.\n\nAsk the subject to take a deep breath in, and press the left hand forward, and the right hand upwards and inwards."
+    },
+    {
+      "question": "Is the normal kidney usually palpable?",
+      "answer": "The kidney is not usually palpable except for the lower pole, which is felt as a smooth, rounded firm swelling between both the right and left hands."
+    },
+    {
+      "question": "How can a kidney be differentiated from other structures on palpation?",
+      "answer": "It can be pushed from one hand to the other and it descends on deep inspiration."
+    },
+    {
+      "question": "What does generalized distension of the abdomen indicate in acute intestinal obstruction?",
+      "answer": "Generalized distension of the abdomen is a late feature of general peritonitis and the subject must not be allowed to reach that stage under any circumstances."
+    },
+    {
+      "question": "What should be noted if a lump is palpated in the abdomen?",
+      "answer": "Carefully palpate for any lump in all quadrants noting its position, size, shape, consistency, and mobility."
+    },
+    {
+      "question": "What are some examples of specific lumps that can be felt in the abdomen?",
+      "answer": "The appendicular lump may be felt in the right iliac fossa.\n\nCold abscesses and interstitial hernia also produce lumps and should be differentiated.\n\nIn intussusception, a sausage-shaped lump may be felt in the epigastrium or left lumbar region."
+    },
+    {
+      "question": "What should be examined at the hernia sites?",
+      "answer": "Examine the hernia sites for any swellings."
+    },
+    {
+      "question": "What is the third step in the examination of the abdomen?",
+      "answer": "III. Percussion"
+    },
+    {
+      "question": "What can light percussion be employed to detect?",
+      "answer": "Light Percussion may be employed to elicit local tenderness."
+    },
+    {
+      "question": "What is the next sub-section under Percussion?",
+      "answer": "Defining the boundaries of abdominal organs"
+    },
+    {
+      "question": "How are the boundaries of the liver defined by percussion?",
+      "answer": "The upper and the lower borders of the right lobe of the liver can be defined accurately by percussion.\n\nStart anteriorly in the fourth intercostal space, where the note will be resonant over the lungs, and work vertically downwards.\n\nIn the normal liver the upper border is at the 5th intercostal space, where the note will become dull.\n\nThis dullness extends down to the lower border formed by the right subcostal margin."
+    },
+    {
+      "question": "What can reduce the normal dullness over the liver?",
+      "answer": "The normal dullness over the upper part of the liver is reduced in severe emphysema, large pneumothorax, and the presence of gas or air in the peritoneal cavity left lower ribs into the left hypochondrium and liver."
+    },
+    {
+      "question": "Where does the spleen's dullness extend from?",
+      "answer": "Its dullness extends from the left lumbar region."
+    },
+    {
+      "question": "What does \"shifting dullness\" test for?",
+      "answer": "The presence of free fluid in the peritoneal cavity."
+    },
+    {
+      "question": "How is the test for shifting dullness performed?",
+      "answer": "It can be determined by eliciting shifting dullness.\n\nWhen the subject lies on his back the fluid gravitates down to the flanks and the intestine floats on the center of the abdomen which will therefore be resonant and the flanks dull.\n\nPercussion should be commenced from the center of the abdomen and is carried down to one flank.\n\nAt the point where dullness starts, the finger is kept in its position and the subject is asked to turn to the opposite side.\n\nThat particular area is again percussed after waiting for a few minutes to allow the fluid to gravitate down. Now the note will be resonant to make the shifting dullness test positive."
+    },
+    {
+      "question": "What does a \"fluid thrill\" test for?",
+      "answer": "It tests for ascites (free fluid in the abdomen)."
+    },
+    {
+      "question": "How is the test for a fluid thrill performed?",
+      "answer": "When the patient is lying in the supine position, one hand of the examiner is placed over the lumbar region on one side.\n\nThe opposite side of the abdomen is flicked or tapped with the fingers of the opposite hand.\n\nA distinct vibration is felt on the palpating hand if ascites is present."
+    },
+    {
+      "question": "How can you avoid false positives when testing for a fluid thrill?",
+      "answer": "During the test, an assistant is asked to place the ulnar border of his hand firmly in the midline of the abdomen to avoid impulse transmission through fat."
+    },
+    {
+      "question": "What is the fourth step in the examination of the abdomen?",
+      "answer": "IV. Auscultation"
+    },
+    {
+      "question": "What should the student be familiar with regarding auscultation of the abdomen?",
+      "answer": "The student should be familiar with normal peristaltic sounds noting their character and frequency by studying them in healthy abdomen."
+    },
+    {
+      "question": "How is auscultation of the abdomen performed?",
+      "answer": "One must listen for several minutes and a stethoscope should be placed on one portion of the abdominal wall without moving."
+    },
+    {
+      "question": "What is the \"silent abdomen\" and what does it signify?",
+      "answer": "The 'silent abdomen' is a pathognomonic feature of diffuse peritonitis. Even localized absence of peristaltic sound will be evident around acute inflammation of the organ concerned."
+    },
+    {
+      "question": "What is the \"noisy abdomen\" and what does it signify?",
+      "answer": "On the contrary, a 'noisy abdomen' is a feature of acute intestinal obstruction. Normal intestinal sound is heard as clicks and gurgles but in intestinal obstruction distinct metallic tinkles or 'borborygmi' is heard."
+    },
+    {
+      "question": "What is the final inference from the physical examination of the abdomen?",
+      "answer": "Inference: On physical examination, the abdomen of the given subject was found to be within normal limits."
+    },
+    {
+      "question": "What is the topic after \"Other peripheral pulsations\" and before \"Clubbing\"?",
+      "answer": "4. Cyanosis"
+    },
+    {
+      "question": "What is cyanosis?",
+      "answer": "Cyanosis is the bluish discoloration of the skin and mucous membrane due to increased deoxyhemoglobin concentration above 5g% in capillary blood."
+    },
+    {
+      "question": "What are the two types of cyanosis?",
+      "answer": "Central cyanosis\n\nPeripheral cyanosis"
+    },
+    {
+      "question": "What is central cyanosis due to?",
+      "answer": "Central cyanosis is due to a reduction in PO2 in arterial blood."
+    },
+    {
+      "question": "What conditions can cause
+    at <unknown> (src\ai\flows\generate-flashcards.ts:92:12)
+    at async generateFlashcardsAction (src\app\actions.ts:10:19)
+  90 |       parsedOutput = JSON.parse(rawText);
+  91 |     } catch (e) {
+> 92 |       throw new Error(`Failed to parse AI response as JSON: ${e.message}. Raw output: ${rawText}`);
+     |            ^
+  93 |     }
+  94 |
+  95 |     if (!parsedOutput || !Array.isArray(parsedOutput.flashcards)) { {
+  traceId: 'fde5f8e34bbb64c1353f6b064fd6c062'
+}
+ POST / 200 in 38343ms
