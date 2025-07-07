@@ -37,6 +37,11 @@ const generateFlashcardsPrompt = ai.definePrompt({
   name: 'generateFlashcardsPrompt',
   input: {schema: GenerateFlashcardsInputSchema},
   prompt: `You are an expert at creating flashcards. Your task is to analyze the following text and generate a list of questions and answers based on it.
+  Follow these rules strictly:
+  Generate atomic flashcards — each flashcard should test only one fact or concept.
+  Do not leave out any information from the source. 
+  Include all content accurately and completely.
+  The goal is to enable the user to fully master the material and be able to reconstruct the original source from the flashcards.
 
 Your response MUST be a valid JSON object and nothing else.
 - The root of the object must be a single key named "flashcards".
