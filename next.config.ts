@@ -1,6 +1,18 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
+    serverComponentsExternalPackages: ["pdf-parse"],
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals.push('pdf-parse');
+    }
+    return config;
+  },
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,

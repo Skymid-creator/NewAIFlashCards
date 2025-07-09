@@ -10,9 +10,13 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import {defineSchema} from 'genkit';
+
 
 const GenerateFlashcardsInputSchema = z.object({
   text: z.string().describe('The text to generate flashcards from.'),
+  images: z.array(z.object({ url: z.string(), contentType: z.string() })).optional().describe('An array of Gemini File API URIs with content types.'),
+  pdfText: z.string().optional().describe('Text extracted from PDF files.'),
 });
 
 export type GenerateFlashcardsInput = z.infer<typeof GenerateFlashcardsInputSchema>;
@@ -36,10 +40,10 @@ export async function generateFlashcards(input: GenerateFlashcardsInput): Promis
 const generateFlashcardsPrompt = ai.definePrompt({
   name: 'generateFlashcardsPrompt',
   input: {schema: GenerateFlashcardsInputSchema},
-  prompt: `You are an expert at creating flashcards. Your task is to analyze the following text and generate a list of questions and answers based on it.
+  prompt: `You are an expert at creating flashcards. Your task is to analyze the following text and images (if provided) and generate a list of questions and answers based on them.
   Follow these rules strictly:
   Generate atomic flashcards — each flashcard should test only one fact or concept.
-  Do not leave out any information from the source. 
+  Do not leave out any information from the source.
   Include all content accurately and completely.
   The goal is to enable the user to fully master the material and be able to reconstruct the original source from the flashcards.
 
@@ -54,13 +58,15 @@ Your response MUST be a valid JSON object and nothing else.
 
 2.  **Unformatted Text:** For any other text, generate meaningful question-and-answer pairs.
 
-3.  **Mixed Content:** The input may contain both formatted and unformatted text. You must handle both cases and combine all resulting flashcards into a single array.
+3.  **Images:** If images are provided, they are references to files in the Gemini Files API. Perform OCR on the images to extract any text. Analyze the extracted text and the image content to generate relevant question-and-answer pairs. For example, if an image contains a diagram, ask questions about the components of the diagram. If an image contains text, treat that text as part of the input.
 
-4. **Unwanted text:** If the input contain unwanted text which cannot be made into flashcards, ignore them
+4.  **Mixed Content:** The input may contain both formatted and unformatted text, as well as images. You must handle all cases and combine all resulting flashcards into a single array.
+
+5. **Unwanted text:** If the input contain unwanted text which cannot be made into flashcards, ignore them
 
 **Important Rules:**
 - Your output must ONLY be the JSON object. Do not add any introductory text like "Here are the flashcards...".
-- If you cannot create any meaningful flashcards from the text, return an empty "flashcards" array.
+- If you cannot create any meaningful flashcards from the text or images, return an empty "flashcards" array.
 
 Example of a valid response:
 {
@@ -74,6 +80,18 @@ Example of a valid response:
 
 Input Text:
 {{{text}}}
+
+{{#if pdfText}}
+Text from PDF:
+{{{pdfText}}}
+{{/if}}
+
+{{#if images}}
+Input Images:
+{{#each images}}
+  {{media url=this.url contentType=this.contentType}}
+{{/each}}
+{{/if}}
 `,
 });
 
@@ -88,7 +106,7 @@ const generateFlashcardsFlow = ai.defineFlow(
       logs.push(message);
     };
 
-    log('Sending text to AI...');
+    log('Sending text and images to AI...');
     const { text } = await generateFlashcardsPrompt(input);
     log('Received response from AI. Parsing...');
 

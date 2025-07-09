@@ -2,12 +2,40 @@
 
 import {
   generateFlashcards,
-  type GenerateFlashcardsInput,
 } from '@/ai/flows/generate-flashcards';
+import { fileManager } from '@/ai/genkit';
+import {promises as fs} from 'fs';
+import path from 'path';
+import os from 'os';
+import pdf from 'pdf-parse';
 
-export async function generateFlashcardsAction(input: GenerateFlashcardsInput) {
+export async function generateFlashcardsAction(formData: FormData) {
   try {
-    const { flashcards, rawOutput, logs } = await generateFlashcards(input);
+    const text = formData.get('text') as string;
+    const files = formData.getAll('files') as File[];
+
+    const fileParts: { url?: string, contentType?: string, text?: string }[] = await Promise.all(files.map(async (file) => {
+      if (file.type.startsWith('image/')) {
+        const tempDir = os.tmpdir();
+        const tempFilePath = path.join(tempDir, file.name);
+        await fs.mkdir(tempDir, { recursive: true }); // Ensure directory exists
+        await fs.writeFile(tempFilePath, Buffer.from(await file.arrayBuffer()));
+        const uploadResult = await fileManager.uploadFile(tempFilePath, {
+          mimeType: file.type,
+          displayName: file.name,
+        });
+        await fs.unlink(tempFilePath);
+        return { url: uploadResult.file.uri, contentType: file.type };
+      } else if (file.type === 'application/pdf') {
+        const arrayBuffer = await file.arrayBuffer();
+        const data = await pdf(Buffer.from(arrayBuffer));
+        return { text: data.text };
+      } else {
+        return {}; // Should not happen if frontend filters correctly
+      }
+    }));
+
+    const { flashcards, rawOutput, logs } = await generateFlashcards({ text, images: fileParts.filter(part => part.url), pdfText: fileParts.filter(part => part.text).map(part => part.text).join('\n\n') });
 
     // The flow now throws on error, so if we get here, the output should be valid.
     if (!flashcards) {
