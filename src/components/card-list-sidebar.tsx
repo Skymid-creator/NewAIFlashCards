@@ -4,7 +4,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Plus, GripVertical, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { cn } from '@/lib/utils';
@@ -12,7 +12,7 @@ import type { Flashcard } from '@/types';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-function SortableCardItem({ id, card, onDelete, onNavigate }: { id: string, card: Flashcard, onDelete: (id: string) => void, onNavigate: (id: string) => void }) {
+function SortableCardItem({ id, card, onDelete, onNavigate, index, activeCardIndex }: { id: string, card: Flashcard, onDelete: (id: string) => void, onNavigate: (id: string) => void, index: number, activeCardIndex: number }) {
     const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
     const style = {
@@ -23,7 +23,7 @@ function SortableCardItem({ id, card, onDelete, onNavigate }: { id: string, card
 
     return (
         <div ref={setNodeRef} style={style} className="mb-2">
-            <Card className="flex items-center p-2 pl-4 bg-card/80 backdrop-blur-sm">
+            <Card className={cn("flex items-center p-2 pl-4 bg-card/80 backdrop-blur-sm", index === activeCardIndex && "bg-primary/10 border border-primary")}>
                 <span 
                     className="flex-1 truncate pr-4 cursor-pointer hover:text-primary transition-colors"
                     onClick={() => onNavigate(id)}
@@ -77,14 +77,25 @@ type CardListSidebarProps = {
     onDelete: (id: string) => void;
     onAdd: (index: number) => void;
     onNavigate: (id: string) => void;
+    activeCardIndex: number;
 }
 
-export default function CardListSidebar({ isOpen, onClose, cards, onReorder, onDelete, onAdd, onNavigate }: CardListSidebarProps) {
+export default function CardListSidebar({ isOpen, onClose, cards, onReorder, onDelete, onAdd, onNavigate, activeCardIndex }: CardListSidebarProps) {
     const [activeId, setActiveId] = useState<string | null>(null);
+    const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
     const sensors = useSensors(
         useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
         useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
     );
+
+    useEffect(() => {
+        if (isOpen && itemRefs.current[activeCardIndex]) {
+            itemRefs.current[activeCardIndex]?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+            });
+        }
+    }, [activeCardIndex, isOpen]);
 
     const handleDragStart = (event: DragStartEvent) => {
         setActiveId(event.active.id as string);
@@ -124,8 +135,8 @@ export default function CardListSidebar({ isOpen, onClose, cards, onReorder, onD
                             <SortableContext items={cards.map(c => c.id)} strategy={verticalListSortingStrategy}>
                                 <AddCardDropZone onClick={() => onAdd(0)} isVisible={true} />
                                 {cards.map((card, index) => (
-                                    <div key={card.id}>
-                                        <SortableCardItem id={card.id} card={card} onDelete={onDelete} onNavigate={onNavigate} />
+                                    <div key={card.id} ref={el => itemRefs.current[index] = el}>
+                                        <SortableCardItem id={card.id} card={card} onDelete={onDelete} onNavigate={onNavigate} index={index} activeCardIndex={activeCardIndex} />
                                         <AddCardDropZone onClick={() => onAdd(index + 1)} isVisible={true} />
                                     </div>
                                 ))}

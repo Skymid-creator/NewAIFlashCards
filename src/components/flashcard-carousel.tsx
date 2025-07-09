@@ -71,8 +71,8 @@ function SortableFlashcard({ card, onEdit, onDelete, editMode }: { card: Flashca
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0 : 1,
+    transition: transition || 'transform 0.3s ease-out',
+    visibility: isDragging ? 'hidden' : 'visible',
   };
 
   return (
@@ -95,9 +95,10 @@ type FlashcardCarouselProps = {
   editMode: boolean;
   isAddingCard: boolean;
   scrollToIndex: number | null;
+  onCardSelect: (index: number) => void;
 };
 
-export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, editMode, isAddingCard, scrollToIndex }: FlashcardCarouselProps) {
+export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, editMode, isAddingCard, scrollToIndex, onCardSelect }: FlashcardCarouselProps) {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
   const [total, setTotal] = React.useState(0);
@@ -118,6 +119,7 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
 
     api.on('select', () => {
       setCurrent(api.selectedScrollSnap() + 1);
+      onCardSelect(api.selectedScrollSnap());
     });
   }
 
@@ -211,7 +213,7 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
         </SortableContext>
         <DragOverlay>
           {activeCard ? (
-            <div className="p-1 h-full w-full scale-105" style={{ zIndex: 200 }}>
+            <div className="p-1 h-full w-full scale-105 transition-all duration-200 ease-out" style={{ zIndex: 200 }}>
               <Flashcard
                 card={activeCard}
                 onEdit={onEdit}

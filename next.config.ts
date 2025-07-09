@@ -3,10 +3,10 @@ import type {NextConfig} from 'next';
 const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
-      bodySizeLimit: '10mb',
+      bodySizeLimit: '50mb',
     },
-    serverComponentsExternalPackages: ["pdf-parse"],
   },
+  serverExternalPackages: ["pdf-parse"],
   webpack: (config, { isServer }) => {
     if (isServer) {
       config.externals.push('pdf-parse');

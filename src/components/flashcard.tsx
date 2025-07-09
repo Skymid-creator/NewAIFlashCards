@@ -63,8 +63,8 @@ export default function Flashcard({ card, onEdit, onDelete, editMode }: Flashcar
         <div className="card-inner relative w-full h-full">
             {/* Card Front (Question) */}
             <div className="card-front absolute w-full h-full">
-                <Card className="relative w-full h-full flex flex-col shadow-lg bg-card/95 group-hover:shadow-[0_0_20px_hsl(var(--primary)/.4)] transition-shadow duration-300">
-                    <CardContent className="p-8 flex-1 flex flex-col justify-center items-center text-center">
+                <Card className="relative w-full h-full flex flex-col shadow-lg bg-card group-hover:shadow-[0_0_20px_hsl(var(--primary)/.4)] transition-shadow duration-300">
+                    <CardContent className="p-8 flex-1 flex flex-col justify-center items-center text-center transition-all duration-300">
                         <p className="text-sm font-bold text-primary mb-4 tracking-widest">QUESTION</p>
                         {editMode ? (
                           <Textarea
@@ -72,10 +72,10 @@ export default function Flashcard({ card, onEdit, onDelete, editMode }: Flashcar
                             onChange={handleQuestionChange}
                             onClick={stopPropagation}
                             onKeyDown={stopPropagation}
-                            className="text-xl md:text-2xl font-semibold text-center resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+                            className="text-xl md:text-2xl font-semibold text-center resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent transition-all duration-300 min-h-[100px]"
                           />
                         ) : (
-                          <p className="text-xl md:text-2xl font-semibold">{card.question}</p>
+                          <p className="text-xl md:text-2xl font-semibold transition-all duration-300 min-h-[100px]">{card.question}</p>
                         )}
                     </CardContent>
                     {editMode && (
@@ -90,8 +90,8 @@ export default function Flashcard({ card, onEdit, onDelete, editMode }: Flashcar
             </div>
             {/* Card Back (Answer) */}
             <div className="card-back absolute w-full h-full">
-                 <Card className="relative w-full h-full flex flex-col shadow-lg bg-card/95 group-hover:shadow-[0_0_20px_hsl(var(--accent)/.4)] transition-shadow duration-300">
-                    <CardContent className="p-8 flex-1 flex flex-col justify-center items-center text-center">
+                 <Card className="relative w-full h-full flex flex-col shadow-lg bg-card group-hover:shadow-[0_0_20px_hsl(var(--accent)/.4)] transition-shadow duration-300">
+                    <CardContent className="p-8 flex-1 flex flex-col justify-center items-center text-center transition-all duration-300">
                         <p className="text-sm font-bold text-accent mb-4 tracking-widest">ANSWER</p>
                         {editMode ? (
                           <Textarea
@@ -99,10 +99,10 @@ export default function Flashcard({ card, onEdit, onDelete, editMode }: Flashcar
                             onChange={handleAnswerChange}
                             onClick={stopPropagation}
                             onKeyDown={stopPropagation}
-                            className="text-lg md:text-xl font-medium text-center resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+                            className="text-lg md:text-xl font-medium text-center resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent transition-all duration-300 min-h-[100px]"
                           />
                         ) : (
-                          <div className="text-lg md:text-xl font-medium whitespace-pre-wrap prose prose-invert prose-p:my-2 prose-strong:text-foreground">{card.answer}</div>
+                          <div className="text-lg md:text-xl font-medium whitespace-pre-wrap prose prose-invert prose-p:my-2 prose-strong:text-foreground transition-all duration-300 min-h-[100px]">{card.answer}</div>
                         )}
                     </CardContent>
                     {editMode && (

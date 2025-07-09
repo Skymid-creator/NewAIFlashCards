@@ -1,0 +1,26 @@
+```json
+{
+  "flashcards": [
+    {
+      "question": "What should you do if the text contains sections that start with 'Question:' on one line and 'Answer:' on a following line?",
+      "answer": "You MUST parse these and use the exact content for the flashcards."
+    },
+    {
+      "question": "What should you do with unwanted text which cannot be made into flashcards?",
+      "answer": "Ignore them"
+    },
+    {
+      "question": "If images are provided, what format will they be in?",
+      "answer": "data URI format"
+    },
+    {
+      "question": "What should you do if an image contains text?",
+      "answer": "Treat that text as part of the input."
+    },
+    {
+      "question": "What should you do before creating flashcards if an image is provided?",
+      "answer": "Perform OCR on the images to extract any text."
+    }
+  ]
+}
+```

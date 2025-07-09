@@ -58,6 +58,7 @@ export default function Home() {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [activeCardIndex, setActiveCardIndex] = useState<number>(0);
   const [currentCardIndexToScrollTo, setCurrentCardIndexToScrollTo] = useState<number | null>(null);
   const [deletedFlashcards, setDeletedFlashcards] = useState<DeletedFlashcard[]>([]);
   const [isPending, startTransition] = useTransition();
@@ -412,7 +413,7 @@ export default function Home() {
                 <h1 className="text-2xl md:text-3xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-primary from-40% to-accent">Skymid Flashcards</h1>
             </div>
             <div className="flex gap-2">
-              <Button onClick={() => setIsSidebarOpen(true)} variant="outline">
+              <Button onClick={() => setIsSidebarOpen(!isSidebarOpen)} variant="outline">
                 <PanelRight className="mr-2" />
                 View Cards
               </Button>
@@ -450,6 +451,7 @@ export default function Home() {
             editMode={editMode}
             isAddingCard={isAdding}
             scrollToIndex={currentCardIndexToScrollTo}
+            onCardSelect={(index) => setActiveCardIndex(index)}
           />
           {rawOutput && (
             <div className="mt-8 w-full">
@@ -472,6 +474,7 @@ export default function Home() {
         onDelete={handleDelete}
         onAdd={handleAddCard}
         onNavigate={handleNavigate}
+        activeCardIndex={activeCardIndex}
       />
     <input
         type="file"

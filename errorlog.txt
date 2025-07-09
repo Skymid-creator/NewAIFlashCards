@@ -1,66 +1,17 @@
-PS D:\AI\GEMINI\Flashcard> npm run dev
+Runtime Error
 
-> nextn@0.1.0 dev
-> next dev --turbopack -p 9002
+Error: onCardSelect is not defined
 
-   ▲ Next.js 15.3.3 (Turbopack)
-   - Local:        http://localhost:9002
-   - Network:      http://172.27.59.99:9002
-   - Environments: .env
+Call Stack 20
+Show 15 ignore-listed frame(s)
+[project]/src/components/flashcard-carousel.tsx [app-client] (ecmascript)/FlashcardCarousel/handleApiInit/<
+.next\static\chunks\src_44680dbe._.js (941:13)
+Carousel.useCallback[scrollNext]
+.next\static\chunks\src_44680dbe._.js (185:28)
+button
+unknown (0:0)
+FlashcardCarousel
+.next\static\chunks\src_44680dbe._.js (1095:235)
+Home
+.next\static\chunks\src_44680dbe._.js (2384:223)
 
- ✓ Starting...
- ✓ Ready in 807ms
- ⚠ Webpack is configured while Turbopack is not, which may cause problems.
- ⚠ See instructions if you need to configure Turbopack:
-  https://nextjs.org/docs/app/api-reference/next-config-js/turbo
-
- ○ Compiling / ...
- ✓ Compiled / in 2.6s
- ⨯ ./src/app/page.tsx:315:6
-Parsing ecmascript source code failed
-  313 |
-  314 |   return (
-> 315 |     <main className="flex min-h-screen w-full flex-col items-center justify-center bg-background p-4 md:p-8 relative overflow-hidden">
-      |      ^^^^
-  316 |       <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/.1),transparent_30%),radial-gradient(circle_at_bottom_right,hsl(var(--accent)/.1),transparent_30%)]"></div>
-  317 |       <AddCardPointer isActive={isAdding} />
-  318 |
-
-Unexpected token `main`. Expected jsx identifier
-
-
- ✓ Compiled /_error in 497ms
- GET / 500 in 3282ms
- ✓ Compiled /favicon.ico in 216ms
- ✓ Compiled in 1995ms
- ✓ Compiled / in 134ms
- ⨯ Error: ENOENT: no such file or directory, open 'D:\AI\GEMINI\Flashcard\test\data\05-versions-space.pdf'
-    at instantiateModule (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:594:23)
-    at getOrInstantiateModuleFromParent (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:653:12)
-    at esmImport (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:132:20)
-    at [project]/src/app/actions.ts [app-rsc] (ecmascript) (src\app\actions.ts:10:0)
-    at instantiateModule (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:594:23)
-    at getOrInstantiateModuleFromParent (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:653:12)
-    at esmImport (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:132:20)
-    at [project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => "[project]/src/app/actions.ts [app-rsc] (ecmascript)" } [app-rsc] (server actions loader, ecmascript) <module evaluation> (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[root-of-the-server]__d7930de7._.js:486:147)
-    at instantiateModule (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:594:23)
-    at getOrInstantiateModuleFromParent (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:653:12)
-    at esmImport (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:132:20)
-    at [project]/.next-internal/server/app/page/actions.js { ACTIONS_MODULE0 => "[project]/src/app/actions.ts [app-rsc] (ecmascript)" } [app-rsc] (server actions loader, ecmascript) (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[root-of-the-server]__d7930de7._.js:508:364)
-    at instantiateModule (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:594:23)
-    at instantiateRuntimeModule (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:661:12)
-    at Object.getOrInstantiateRuntimeModule (D:\AI\GEMINI\Flashcard\.next\server\chunks\ssr\[turbopack]_runtime.js:677:12)
-    at Object.<anonymous> (D:\AI\GEMINI\Flashcard\.next\server\app\page.js:40:9)
-   8 | import path from 'path';
-   9 | import os from 'os';
-> 10 | import pdf from 'pdf-parse';
-  11 |
-  12 | export async function generateFlashcardsAction(formData: FormData) {
-  13 |   try { {
-  errno: -4058,
-  code: 'ENOENT',
-  syscall: 'open',
-  path: 'D:\\AI\\GEMINI\\Flashcard\\test\\data\\05-versions-space.pdf',
-  page: '/'
-}
- GET / 500 in 1064ms
