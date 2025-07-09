@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { memo } from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -44,7 +45,7 @@ function AddCardDropZone({ onClick, isAdding }: { onClick: () => void; isAdding:
     );
 }
 
-function SortableFlashcard({ card, onEdit, onDelete, editMode }: { card: FlashcardType; onEdit: FlashcardCarouselProps['onEdit']; onDelete: FlashcardCarouselProps['onDelete']; editMode: boolean }) {
+const SortableFlashcard = memo(function SortableFlashcard({ card, onEdit, onDelete, editMode }: { card: FlashcardType; onEdit: FlashcardCarouselProps['onEdit']; onDelete: FlashcardCarouselProps['onDelete']; editMode: boolean }) {
   const {
     attributes,
     listeners,
@@ -70,7 +71,7 @@ function SortableFlashcard({ card, onEdit, onDelete, editMode }: { card: Flashca
       />
     </div>
   );
-}
+});
 
 type FlashcardCarouselProps = {
   cards: FlashcardType[];

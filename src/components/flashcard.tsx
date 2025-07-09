@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { Flashcard as FlashcardType } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
@@ -18,7 +18,7 @@ type FlashcardProps = {
   editMode: boolean;
 };
 
-export default function Flashcard({ card, onEdit, onDelete, editMode }: FlashcardProps) {
+export default memo(function Flashcard({ card, onEdit, onDelete, editMode }: FlashcardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [question, setQuestion] = useState(card.question);
   const [answer, setAnswer] = useState(card.answer);
@@ -26,6 +26,28 @@ export default function Flashcard({ card, onEdit, onDelete, editMode }: Flashcar
   useEffect(() => {
     setIsFlipped(false);
   }, [editMode]);
+
+  useEffect(() => {
+    if (question !== card.question) {
+      const handler = setTimeout(() => {
+        onEdit(card.id, question, answer);
+      }, 500); // Debounce for 500ms
+      return () => {
+        clearTimeout(handler);
+      };
+    }
+  }, [question, card.id, card.question, answer, onEdit]);
+
+  useEffect(() => {
+    if (answer !== card.answer) {
+      const handler = setTimeout(() => {
+        onEdit(card.id, question, answer);
+      }, 500); // Debounce for 500ms
+      return () => {
+        clearTimeout(handler);
+      };
+    }
+  }, [answer, card.id, card.answer, question, onEdit]);
 
   const handleCardClick = (e: React.MouseEvent) => {
     if (editMode) return; // Disable flip on click in edit mode
@@ -49,12 +71,10 @@ export default function Flashcard({ card, onEdit, onDelete, editMode }: Flashcar
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setQuestion(e.target.value);
-    onEdit(card.id, e.target.value, answer);
   };
 
   const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setAnswer(e.target.value);
-    onEdit(card.id, question, e.target.value);
   };
 
   return (
@@ -148,4 +168,4 @@ export default function Flashcard({ card, onEdit, onDelete, editMode }: Flashcar
     </motion.div>
     </AnimatePresence>
   );
-}
+});

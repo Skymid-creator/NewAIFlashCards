@@ -2,7 +2,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 
-import { useState, useTransition, useRef, useEffect } from 'react';
+import { useState, useTransition, useRef, useEffect, useCallback } from 'react';
 import { BrainCircuit, Loader, Plus, Sparkles, PanelRight, Image as ImageIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -252,7 +252,7 @@ export default function Home() {
     });
   };
 
-  const handleEdit = (id: string, newQuestion: string, newAnswer: string) => {
+  const handleEdit = useCallback((id: string, newQuestion: string, newAnswer: string) => {
     setFlashcards(prev =>
       prev.map(card =>
         card.id === id
@@ -260,9 +260,9 @@ export default function Home() {
           : card
       )
     );
-  };
+  }, []);
 
-  const handleDelete = (id: string) => {
+  const handleDelete = useCallback((id: string) => {
     setFlashcards(prev => {
       const cardIndex = prev.findIndex(card => card.id === id);
       if (cardIndex !== -1) {
@@ -275,7 +275,7 @@ export default function Home() {
       }
       return prev.filter(card => card.id !== id);
     });
-  };
+  }, []);
 
   const handleUndo = () => {
     if (deletedFlashcards.length === 0) return;
@@ -296,7 +296,7 @@ export default function Home() {
     setFiles([]);
   };
 
-  const handleAddCard = (index: number) => {
+  const handleAddCard = useCallback((index: number) => {
     const newCard: FlashcardType = {
         id: uuidv4(),
         question: 'New Question',
@@ -308,24 +308,26 @@ export default function Home() {
         return newFlashcards;
     });
     setIsAdding(false);
-  }
+  }, []);
 
-  const handleReorderCards = (oldIndex: number, newIndex: number) => {
+  const handleReorderCards = useCallback((oldIndex: number, newIndex: number) => {
     setFlashcards(prev => {
         const newFlashcards = [...prev];
         const [removed] = newFlashcards.splice(oldIndex, 1);
         newFlashcards.splice(newIndex, 0, removed);
         return newFlashcards;
     });
-  }
+  }, []);
 
-  const handleNavigate = (id: string) => {
+  const handleNavigate = useCallback((id: string) => {
     const index = flashcards.findIndex(c => c.id === id);
     if (index !== -1) {
         setCurrentCardIndexToScrollTo(index);
-        setIsSidebarOpen(false);
+        if (!editMode) {
+            setIsSidebarOpen(false);
+        }
     }
-  }
+  }, [flashcards, editMode]);
 
   return (
     <main className="flex min-h-screen w-full flex-col items-center justify-center bg-background p-4 md:p-8 relative overflow-hidden">
