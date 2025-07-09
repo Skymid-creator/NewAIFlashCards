@@ -16,32 +16,19 @@ import { Card, CardContent } from './ui/card';
 import { DndContext, useSensor, useSensors, PointerSensor, KeyboardSensor, closestCenter, DragOverlay, DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useDroppable } from '@dnd-kit/core';
+import { AnimatePresence, motion } from 'framer-motion';
 
-function DroppableTrashZone({ id, children, isActive, className }: { id: string; children: React.ReactNode; isActive: boolean, className?: string }) {
-  const { setNodeRef, isOver } = useDroppable({ id });
-  return (
-    <div
-      ref={setNodeRef}
-      className={cn(
-        "absolute left-0 right-0 h-24 flex items-center justify-center text-lg font-semibold text-muted-foreground transition-all duration-300",
-        isActive ? "opacity-100" : "opacity-0 pointer-events-none",
-        isOver ? "bg-red-500/20 text-red-400" : "bg-transparent",
-        className
-      )}
-      style={{ zIndex: 150 }}
-    >
-      {children}
-    </div>
-  );
-}
+
 
 function AddCardDropZone({ onClick, isAdding }: { onClick: () => void; isAdding: boolean }) {
     const [isOver, setIsOver] = React.useState(false);
   
     return (
       <div 
-        className="relative w-12 h-full flex items-center justify-center cursor-pointer"
+        className={cn(
+          "relative w-12 h-full flex items-center justify-center cursor-pointer transition-all duration-300",
+          !isAdding && "opacity-0 pointer-events-none"
+        )}
         onClick={(e) => {
             e.stopPropagation();
             if (isAdding) onClick();
@@ -49,12 +36,10 @@ function AddCardDropZone({ onClick, isAdding }: { onClick: () => void; isAdding:
         onMouseEnter={() => setIsOver(true)}
         onMouseLeave={() => setIsOver(false)}
       >
-        {isAdding && (
-            <div className={cn(
-                "w-1 h-64 bg-primary/20 rounded-full transition-all duration-300",
-                isOver && "h-72 w-2 bg-primary/40"
-            )}></div>
-        )}
+        <div className={cn(
+            "w-1 h-64 bg-primary/20 rounded-full transition-all duration-300",
+            isOver && "h-72 w-2 bg-primary/40"
+        )}></div>
       </div>
     );
 }
@@ -71,8 +56,8 @@ function SortableFlashcard({ card, onEdit, onDelete, editMode }: { card: Flashca
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition: transition || 'transform 0.3s ease-out',
-    visibility: isDragging ? 'hidden' : 'visible',
+    transition: transition || 'transform 0.3s ease-out, opacity 0.2s ease-out',
+    opacity: isDragging ? 0.4 : 1,
   };
 
   return (
@@ -137,9 +122,6 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
     const { active, over } = event;
     if (!activeId) return;
 
-    if (over && (over.id === 'trash-top' || over.id === 'trash-bottom')) {
-        onDelete(active.id as string);
-    }
     setActiveId(null);
   };
 
@@ -223,16 +205,9 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
             </div>
           ) : null}
         </DragOverlay>
-        {editMode && (
-          <>
-            <DroppableTrashZone id="trash-top" isActive={!!activeId} className="top-0">Drag here to remove</DroppableTrashZone>
-            <DroppableTrashZone id="trash-bottom" isActive={!!activeId} className="bottom-0">Drag here to remove</DroppableTrashZone>
-          </>
-        )}
       </DndContext>
         <div className="py-2 text-center text-sm text-muted-foreground mt-4 animate-fade-in">
             Card {current} of {total}
         </div>
     </div>
   );
-}

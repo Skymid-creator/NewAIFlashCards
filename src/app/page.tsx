@@ -6,6 +6,7 @@ import { useState, useTransition, useRef, useEffect } from 'react';
 import { BrainCircuit, Loader, Plus, Sparkles, PanelRight, Image as ImageIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { generateFlashcardsAction } from './actions';
 import type { Flashcard as FlashcardType } from '@/types';
@@ -417,17 +418,23 @@ export default function Home() {
                 <PanelRight className="mr-2" />
                 View Cards
               </Button>
-              {editMode && (
+              <div className={cn(
+                "transition-all duration-300",
+                !editMode && "opacity-0 pointer-events-none"
+              )}>
                 <Button onClick={() => setIsAdding(!isAdding)} variant="outline">
                     <Plus className="mr-2" />
                     {isAdding ? 'Cancel' : 'Add Flashcard'}
                 </Button>
-              )}
-              {deletedFlashcards.length > 0 && (
+              </div>
+              <div className={cn(
+                "transition-all duration-300",
+                deletedFlashcards.length === 0 && "opacity-0 pointer-events-none"
+              )}>
                 <Button onClick={handleUndo} variant="outline">
                   Undo
                 </Button>
-              )}
+              </div>
               <Button onClick={handleExport} variant="outline">
                 Export
               </Button>

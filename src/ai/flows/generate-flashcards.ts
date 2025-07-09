@@ -62,6 +62,10 @@ Your response MUST be a valid JSON object and nothing else.
 
 4.  **Mixed Content:** The input may contain both formatted and unformatted text, as well as images. You must handle all cases and combine all resulting flashcards into a single array.
 
+5.  **Tables from Images:** If an image contains a table, extract the data and represent it accurately in markdown table format within the flashcard's "answer" field. Preserve the original structure and content of the table as closely as possible.
+
+6.  **Implicit Tables:** If the input text or extracted image text contains structured data that naturally lends itself to a tabular representation (e.g., lists of items with properties, comparisons, structured data), create a markdown table in the flashcard's "answer" field, even if the original source did not explicitly provide a table. Ensure the table is clear, concise, and enhances understanding.
+
 5. **Unwanted text:** If the input contain unwanted text which cannot be made into flashcards, ignore them
 
 **Important Rules:**
@@ -122,10 +126,12 @@ const generateFlashcardsFlow = ai.defineFlow(
     }
 
     const jsonString = rawText.substring(jsonStartIndex, jsonEndIndex + 1);
+    // Fix bad escaped characters in AI response, specifically \" which breaks JSON
+    const cleanedJsonString = jsonString.replace(/\\"/g, '"');
 
     let parsedOutput: Omit<GenerateFlashcardsOutput, 'rawOutput'>;
     try {
-      parsedOutput = JSON.parse(jsonString);
+      parsedOutput = JSON.parse(cleanedJsonString);
       log('AI response parsed successfully.');
     } catch (e) {
       throw new Error(`Failed to parse AI response as JSON: ${e.message}. Attempted to parse: ${jsonString}`);
