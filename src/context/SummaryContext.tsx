@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
@@ -8,15 +7,12 @@ interface SummaryContextType {
   generateSummary: (question: string, answer: string, onStart: () => void, onEnd: () => void) => Promise<void>;
   clearSummaries: () => void;
   deleteSummary: (index: number) => void;
-  undoDeleteSummary: () => void;
-  hasDeletedSummaries: boolean;
 }
 
 const SummaryContext = createContext<SummaryContextType | undefined>(undefined);
 
 export const SummaryProvider = ({ children }: { children: ReactNode }) => {
   const [summaries, setSummaries] = useState<string[]>([]);
-  const [lastDeletedSummary, setLastDeletedSummary] = useState<string | null>(null);
 
   const generateSummary = async (question: string, answer: string, onStart: () => void, onEnd: () => void) => {
     onStart();
@@ -33,7 +29,6 @@ export const SummaryProvider = ({ children }: { children: ReactNode }) => {
       }
       const data = await response.json();
       setSummaries((prevSummaries) => [...prevSummaries, data.summary]);
-      setLastDeletedSummary(null); // Clear last deleted on new summary generation
     } catch (error) {
       console.error('Error generating summary:', error);
       // Optionally, add an error message to the summaries or handle it differently

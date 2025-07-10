@@ -19,6 +19,7 @@ type CarouselProps = {
   plugins?: CarouselPlugin
   orientation?: "horizontal" | "vertical"
   setApi?: (api: CarouselApi) => void
+  editMode?: boolean; // Add editMode prop
 }
 
 type CarouselContextProps = {
@@ -54,6 +55,7 @@ const Carousel = React.forwardRef<
       plugins,
       className,
       children,
+      editMode, // Destructure editMode
       ...props
     },
     ref
@@ -87,6 +89,7 @@ const Carousel = React.forwardRef<
 
     const handleKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
+        console.log('handleKeyDown: Key', event.key, 'editMode:', editMode);
         if (event.key === "ArrowLeft") {
           event.preventDefault()
           scrollPrev()
@@ -95,7 +98,7 @@ const Carousel = React.forwardRef<
           scrollNext()
         }
       },
-      [scrollPrev, scrollNext]
+      [scrollPrev, scrollNext, editMode]
     )
 
     React.useEffect(() => {
@@ -136,10 +139,13 @@ const Carousel = React.forwardRef<
       >
         <div
           ref={ref}
-          onKeyDownCapture={handleKeyDown}
+          onKeyDownCapture={editMode ? undefined : handleKeyDown}
           className={cn("relative", className)}
           role="region"
           aria-roledescription="carousel"
+          tabIndex={0}
+          onFocus={() => console.log('Carousel focused')}
+          onBlur={() => console.log('Carousel blurred')}
           {...props}
         >
           {children}

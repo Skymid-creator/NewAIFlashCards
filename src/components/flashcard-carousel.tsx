@@ -53,7 +53,7 @@ const SortableFlashcard = memo(function SortableFlashcard({ card, onEdit, onDele
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: card.id, disabled: !editMode });
+  } = useSortable({ id: card.id, disabled: editMode });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -111,7 +111,19 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(KeyboardSensor)
+    useSensor(KeyboardSensor, {
+      // Disable keyboard sensor when in edit mode to allow textarea to handle arrow keys
+      // This assumes that when editMode is true, a textarea is focused and needs keyboard input.
+      // Further refinement might be needed if other elements in edit mode also need keyboard navigation.
+      disabled: editMode,
+      onActivation: ({ event }) => {
+        // If in edit mode and the event target is a textarea, prevent activation
+        if (editMode && (event.target as HTMLElement).tagName === 'TEXTAREA') {
+          return false; // Prevent activation
+        }
+        return true; // Allow activation otherwise
+      },
+    })
   );
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -158,6 +170,7 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
                   loop: false,
                   draggable: false,
               }}
+              editMode={editMode}
           >
               <CarouselContent className="-ml-8">
                 {editMode && (

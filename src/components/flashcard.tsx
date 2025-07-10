@@ -78,7 +78,7 @@ const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, edit
         >
           {/* Card Front */}
           <div className={cn( "absolute w-full h-full", "[backface-visibility:hidden]" )}>
-            <Card className="relative w-full h-full flex flex-col shadow-lg bg-card group-hover:shadow-[0_0_20px_hsl(var(--primary)/.4)] transition-shadow duration-300">
+            <Card className="relative w-full h-full flex flex-col shadow-md bg-card group-hover:shadow-lg group-hover:shadow-primary/20 transition-shadow duration-300">
               {editMode && ( <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onDelete(card.id); }} className="absolute top-2 left-2 z-50"> <X className="h-5 w-5" /> <span className="sr-only">Delete Card</span> </Button> )}
               {/* CHANGE: CardContent is now a standard flex-col */}
               <CardContent className="flex-grow flex flex-col p-6">
@@ -91,12 +91,12 @@ const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, edit
                       onChange={handleQuestionChange}
                       onClick={stopPropagation}
                       // CHANGE: Larger, bolder, centered text for edit mode
-                      className="w-full h-full bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-center text-3xl font-semibold leading-relaxed"
+                      className="w-full h-full bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-center text-2xl font-semibold leading-relaxed"
                       placeholder="Enter your question..."
                     />
                   ) : (
                     // CHANGE: Larger, bolder, centered text for display mode
-                    <div className="max-w-none text-center text-3xl font-semibold leading-relaxed whitespace-pre-wrap">
+                    <div className="max-w-none text-center text-2xl font-semibold leading-relaxed whitespace-pre-wrap">
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{question}</ReactMarkdown>
                     </div>
                   )}
@@ -111,7 +111,7 @@ const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, edit
 
           {/* Card Back */}
           <div className={cn( "absolute w-full h-full", "[backface-visibility:hidden]", "[transform:rotateY(180deg)]" )}>
-            <Card className="relative w-full h-full flex flex-col shadow-lg bg-card group-hover:shadow-[0_0_20px_hsl(var(--primary)/.4)] transition-shadow duration-300">
+            <Card className="relative w-full h-full flex flex-col shadow-md bg-card group-hover:shadow-lg group-hover:shadow-primary/20 transition-shadow duration-300">
               {/* CHANGE: CardContent is now a standard flex-col */}
               <CardContent className="flex-grow flex flex-col p-6">
                 <h3 className="text-sm font-semibold text-muted-foreground mb-4 text-center">Answer</h3>
@@ -123,12 +123,12 @@ const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, edit
                       onChange={handleAnswerChange}
                       onClick={stopPropagation}
                       // CHANGE: Larger, bolder, centered text for edit mode
-                      className="w-full h-full bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-center text-3xl font-semibold leading-relaxed"
+                      className="w-full h-full bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-center text-2xl font-semibold leading-relaxed"
                       placeholder="Enter your answer..."
                     />
                   ) : (
                      // CHANGE: Larger, bolder, centered text for display mode
-                    <div className="max-w-none text-center text-3xl font-semibold leading-relaxed whitespace-pre-wrap">
+                    <div className="max-w-none text-center text-2xl font-semibold leading-relaxed whitespace-pre-wrap">
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{answer}</ReactMarkdown>
                     </div>
                   )}
