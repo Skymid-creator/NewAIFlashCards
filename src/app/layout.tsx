@@ -3,6 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import { SummaryProvider } from '@/context/SummaryContext';
+import { SummarySidebar } from '@/components/summary-sidebar';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,7 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={cn("font-sans antialiased", inter.variable)}>
-        {children}
+        <SummaryProvider>
+          {children}
+          <SummarySidebar />
+        </SummaryProvider>
         <Toaster />
       </body>
     </html>

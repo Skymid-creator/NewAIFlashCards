@@ -8,7 +8,7 @@
  * - GenerateFlashcardsOutput - The return type for the generateFlashcards function.
  */
 
-import {ai} from '@/ai/genkit';
+import {geminiFlash} from '@/ai/genkit';
 import {z} from 'genkit';
 import {defineSchema} from 'genkit';
 
@@ -37,7 +37,7 @@ export async function generateFlashcards(input: GenerateFlashcardsInput): Promis
   return generateFlashcardsFlow(input);
 }
 
-const generateFlashcardsPrompt = ai.definePrompt({
+const generateFlashcardsPrompt = geminiFlash.definePrompt({
   name: 'generateFlashcardsPrompt',
   input: {schema: GenerateFlashcardsInputSchema},
   prompt: `You are an expert at creating flashcards. Your task is to analyze the following text and images (if provided) and generate a list of questions and answers based on them.
@@ -99,7 +99,7 @@ Input Images:
 `,
 });
 
-const generateFlashcardsFlow = ai.defineFlow(
+const generateFlashcardsFlow = geminiFlash.defineFlow(
   {
     name: 'generateFlashcardsFlow',
     inputSchema: GenerateFlashcardsInputSchema,

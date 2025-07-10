@@ -152,11 +152,11 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
         <SortableContext items={cards.map(card => card.id)}>
           <Carousel 
               setApi={handleApiInit} 
-              className="w-full flex-1 max-w-4xl transition-all duration-500"
+              className="w-full flex-1 max-w-full transition-all duration-500"
               opts={{
                   align: 'center',
                   loop: false,
-                  draggable: !editMode,
+                  draggable: false,
               }}
           >
               <CarouselContent className="-ml-8">

@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect, memo } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useSummary } from '@/context/SummaryContext';
 import type { Flashcard as FlashcardType } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from './ui/textarea';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
-import { RotateCw, X } from 'lucide-react';
+import { RotateCw, X, Sparkles } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -18,23 +18,55 @@ type FlashcardProps = {
   editMode: boolean;
 };
 
-export default memo(function Flashcard({ card, onEdit, onDelete, editMode }: FlashcardProps) {
+// --- MODIFIED COMPONENT ---
+const GeminiRememberButton = ({
+  onClick,
+  disabled,
+  isLoading
+}: {
+  onClick: (e: React.MouseEvent) => void;
+  disabled: boolean;
+  isLoading: boolean;
+}) => {
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={onClick}
+      disabled={disabled}
+      className={cn(
+        "relative overflow-hidden transition-all duration-300 border-0 shadow-lg text-white",
+        "hover:scale-105 hover:shadow-xl",
+        isLoading
+          // This class applies the new sweeping gradient animation
+          ? "bg-gradient-to-r from-blue-500 via-green-500 via-yellow-500 via-red-500 to-blue-500 bg-[length:400%_100%] animate-[gradient_1.5s_linear_infinite]"
+          // This is the default state
+          : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+      )}
+    >
+      <Sparkles className={cn("mr-2 h-4 w-4", isLoading && "animate-pulse")} />
+      Remember
+    </Button>
+  );
+};
+
+const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, editMode }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [question, setQuestion] = useState(card.question);
   const [answer, setAnswer] = useState(card.answer);
+  const [isSummaryLoading, setIsSummaryLoading] = useState(false);
+  const { generateSummary } = useSummary();
 
   useEffect(() => {
     setIsFlipped(false);
-  }, [editMode]);
+  }, [card.id, editMode]);
 
   useEffect(() => {
     if (question !== card.question) {
       const handler = setTimeout(() => {
         onEdit(card.id, question, answer);
-      }, 500); // Debounce for 500ms
-      return () => {
-        clearTimeout(handler);
-      };
+      }, 500);
+      return () => clearTimeout(handler);
     }
   }, [question, card.id, card.question, answer, onEdit]);
 
@@ -42,32 +74,41 @@ export default memo(function Flashcard({ card, onEdit, onDelete, editMode }: Fla
     if (answer !== card.answer) {
       const handler = setTimeout(() => {
         onEdit(card.id, question, answer);
-      }, 500); // Debounce for 500ms
-      return () => {
-        clearTimeout(handler);
-      };
+      }, 500);
+      return () => clearTimeout(handler);
     }
   }, [answer, card.id, card.answer, question, onEdit]);
 
   const handleCardClick = (e: React.MouseEvent) => {
-    if (editMode) return; // Disable flip on click in edit mode
-    const target = e.target as HTMLElement;
-    // Prevent flipping if a link inside the answer is clicked
-    if (target.tagName === 'A' || target.closest('button')) {
+    if (!editMode) {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'A' || target.closest('button')) {
         e.stopPropagation();
         return;
+      }
+      setIsFlipped(!isFlipped);
     }
-    setIsFlipped(!isFlipped);
   };
 
   const handleFlipButtonClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click handler
+    e.stopPropagation();
     setIsFlipped(!isFlipped);
-  }
+  };
+
+  const handleRememberClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsSummaryLoading(true);
+    try {
+      await generateSummary(card.question, card.answer, () => {}, () => setIsSummaryLoading(false));
+    } catch (error) {
+      console.error('Error generating summary:', error);
+      setIsSummaryLoading(false);
+    }
+  };
 
   const stopPropagation = (e: React.SyntheticEvent) => {
     e.stopPropagation();
-  }
+  };
 
   const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setQuestion(e.target.value);
@@ -78,94 +119,138 @@ export default memo(function Flashcard({ card, onEdit, onDelete, editMode }: Fla
   };
 
   return (
-    <AnimatePresence>
-      <motion.div
-        key={card.id} // Key is crucial for AnimatePresence to track items
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0, transition: { duration: 0.15 } }}
-        className="relative w-full h-full group perspective min-h-[450px]"
-      >
+    <>
+      {/* --- MODIFIED CSS KEYFRAMES --- */}
+      <style jsx>{`
+        @keyframes gradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          100% {
+            background-position: 100% 50%;
+          }
+        }
+      `}</style>
       <div
-        className={cn("card w-full h-full", isFlipped && 'flipped')}
+        className={cn(
+          "relative w-full h-full min-h-[450px] group cursor-pointer",
+          "[perspective:1000px]"
+        )}
         onClick={handleCardClick}
       >
-        <div className="card-inner relative w-full h-full">
-            {/* Card Front (Question) */}
-            <div className="card-front absolute w-full h-full">
-                <Card className="relative w-full h-full flex flex-col shadow-lg bg-card group-hover:shadow-[0_0_20px_hsl(var(--primary)/.4)] transition-shadow duration-300">
-                    {editMode && (
-                        <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onDelete(card.id); }} className="absolute top-2 right-2 z-50">
-                            <X className="h-5 w-5" />
-                            <span className="sr-only">Delete Card</span>
-                        </Button>
-                    )}
-                    <CardContent className="p-8 flex-1 flex flex-col justify-center items-center text-center transition-all duration-300">
-                        <p className="text-sm font-bold text-primary mb-4 tracking-widest">QUESTION</p>
-                        {editMode ? (
-                          <Textarea
-                            value={question}
-                            onChange={handleQuestionChange}
-                            onClick={stopPropagation}
-                            onKeyDown={stopPropagation}
-                            className="text-xl md:text-2xl font-semibold text-center resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent transition-all duration-300"
-                          />
-                        ) : (
-                          <p className="text-xl md:text-2xl font-semibold transition-all duration-300">{card.question}</p>
-                        )}
-                    </CardContent>
-                    {editMode && (
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50">
-                            <Button variant="outline" size="icon" onClick={handleFlipButtonClick}>
-                                <RotateCw className="h-4 w-4" />
-                                <span className="sr-only">Flip Card</span>
-                            </Button>
-                        </div>
-                    )}
-                </Card>
-            </div>
-            {/* Card Back (Answer) */}
-            <div className="card-back absolute w-full h-full">
-                 <Card className="relative w-full h-full flex flex-col shadow-lg bg-card group-hover:shadow-[0_0_20px_hsl(var(--accent)/.4)] transition-shadow duration-300">
-                    {editMode && (
-                        <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onDelete(card.id); }} className="absolute top-2 right-2 z-50">
-                            <X className="h-5 w-5" />
-                            <span className="sr-only">Delete Card</span>
-                        </Button>
-                    )}
-                    <CardContent className="p-8 flex-1 flex flex-col justify-center items-center text-center transition-all duration-300">
-                        <p className="text-sm font-bold text-accent mb-4 tracking-widest">ANSWER</p>
-                        {editMode ? (
-                          <Textarea
-                            value={answer}
-                            onChange={handleAnswerChange}
-                            onClick={stopPropagation}
-                            onKeyDown={stopPropagation}
-                            className="text-lg md:text-xl font-medium text-center resize-none border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent transition-all duration-300"
-                          />
-                        ) : (
-                          <div className="text-lg md:text-xl font-medium whitespace-pre-wrap prose prose-invert prose-p:my-2 prose-strong:text-foreground transition-all duration-300">
-                            <div>
-                              <ReactMarkdown 
-                                remarkPlugins={[remarkGfm]}
-                              >{card.answer}</ReactMarkdown>
-                            </div>
-                          </div>
-                        )}
-                    </CardContent>
-                    {editMode && (
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50">
-                            <Button variant="outline" size="icon" onClick={handleFlipButtonClick}>
-                                <RotateCw className="h-4 w-4" />
-                                <span className="sr-only">Flip Card</span>
-                            </Button>
-                        </div>
-                    )}
-                </Card>
-            </div>
+        <div
+          className={cn(
+            "relative w-full h-full transition-transform duration-700",
+            "[transform-style:preserve-3d]",
+            isFlipped && "[transform:rotateY(180deg)]"
+          )}
+        >
+          {/* Card Front */}
+          <div
+            className={cn(
+              "absolute w-full h-full",
+              "[backface-visibility:hidden]"
+            )}
+          >
+            <Card className="relative w-full h-full flex flex-col shadow-lg bg-card group-hover:shadow-[0_0_20px_hsl(var(--primary)/.4)] transition-shadow duration-300">
+              {editMode && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(card.id);
+                  }}
+                  className="absolute top-2 left-2 z-50"
+                >
+                  <X className="h-5 w-5" />
+                  <span className="sr-only">Delete Card</span>
+                </Button>
+              )}
+              <CardContent className="flex-grow flex flex-col p-6 overflow-y-auto">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-2">Question</h3>
+                {editMode ? (
+                  <Textarea
+                    value={question}
+                    onChange={handleQuestionChange}
+                    onClick={stopPropagation}
+                    className="w-full flex-grow resize-none text-lg bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+                    placeholder="Enter your question..."
+                  />
+                ) : (
+                  <div className="prose prose-invert max-w-none flex-grow">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{question}</ReactMarkdown>
+                  </div>
+                )}
+              </CardContent>
+              <div className="flex justify-between items-center p-4 border-t">
+                {!editMode && (
+                  <GeminiRememberButton
+                    onClick={handleRememberClick}
+                    disabled={isSummaryLoading}
+                    isLoading={isSummaryLoading}
+                  />
+                )}
+                <Button variant="ghost" size="icon" onClick={handleFlipButtonClick}>
+                  <RotateCw className="h-5 w-5" />
+                  <span className="sr-only">Flip Card</span>
+                </Button>
+              </div>
+            </Card>
+          </div>
+
+          {/* Card Back */}
+          <div
+            className={cn(
+              "absolute w-full h-full",
+              "[backface-visibility:hidden]",
+              "[transform:rotateY(180deg)]"
+            )}
+          >
+            <Card className="relative w-full h-full flex flex-col shadow-lg bg-card group-hover:shadow-[0_0_20px_hsl(var(--primary)/.4)] transition-shadow duration-300">
+              <CardContent className="flex-grow flex flex-col p-6 overflow-y-auto">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-2">Answer</h3>
+                {editMode ? (
+                  <Textarea
+                    value={answer}
+                    onChange={handleAnswerChange}
+                    onClick={stopPropagation}
+                    className="w-full flex-grow resize-none text-lg bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
+                    placeholder="Enter your answer..."
+                  />
+                ) : (
+                  <div className="prose prose-invert max-w-none flex-grow">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{answer}</ReactMarkdown>
+                  </div>
+                )}
+              </CardContent>
+              <div className="flex justify-between items-center p-4 border-t">
+                 {/* This button doesn't need the loading state, but kept for consistency */}
+                 {!editMode && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleRememberClick}
+                    disabled={isSummaryLoading}
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white border-0 shadow-lg"
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Remember
+                  </Button>
+                )}
+                <Button variant="ghost" size="icon" onClick={handleFlipButtonClick}>
+                  <RotateCw className="h-5 w-5" />
+                  <span className="sr-only">Flip Card</span>
+                </Button>
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
-    </motion.div>
-    </AnimatePresence>
+    </>
   );
 });
+
+Flashcard.displayName = 'Flashcard';
+
+export default Flashcard;
