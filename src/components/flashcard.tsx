@@ -18,7 +18,7 @@ type FlashcardProps = {
   editMode: boolean;
 };
 
-// --- MODIFIED COMPONENT ---
+// --- (No changes to this button component) ---
 const GeminiRememberButton = ({
   onClick,
   disabled,
@@ -38,9 +38,7 @@ const GeminiRememberButton = ({
         "relative overflow-hidden transition-all duration-300 border-0 shadow-lg text-white",
         "hover:scale-105 hover:shadow-xl",
         isLoading
-          // This class applies the new sweeping gradient animation
           ? "bg-gradient-to-r from-blue-500 via-green-500 via-yellow-500 via-red-500 to-blue-500 bg-[length:400%_100%] animate-[gradient_1.5s_linear_infinite]"
-          // This is the default state
           : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
       )}
     >
@@ -57,191 +55,88 @@ const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, edit
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const { generateSummary } = useSummary();
 
-  useEffect(() => {
-    setIsFlipped(false);
-  }, [card.id, editMode]);
-
-  useEffect(() => {
-    if (question !== card.question) {
-      const handler = setTimeout(() => {
-        onEdit(card.id, question, answer);
-      }, 500);
-      return () => clearTimeout(handler);
-    }
-  }, [question, card.id, card.question, answer, onEdit]);
-
-  useEffect(() => {
-    if (answer !== card.answer) {
-      const handler = setTimeout(() => {
-        onEdit(card.id, question, answer);
-      }, 500);
-      return () => clearTimeout(handler);
-    }
-  }, [answer, card.id, card.answer, question, onEdit]);
-
-  const handleCardClick = (e: React.MouseEvent) => {
-    if (!editMode) {
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'A' || target.closest('button')) {
-        e.stopPropagation();
-        return;
-      }
-      setIsFlipped(!isFlipped);
-    }
-  };
-
-  const handleFlipButtonClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsFlipped(!isFlipped);
-  };
-
-  const handleRememberClick = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsSummaryLoading(true);
-    try {
-      await generateSummary(card.question, card.answer, () => {}, () => setIsSummaryLoading(false));
-    } catch (error) {
-      console.error('Error generating summary:', error);
-      setIsSummaryLoading(false);
-    }
-  };
-
-  const stopPropagation = (e: React.SyntheticEvent) => {
-    e.stopPropagation();
-  };
-
-  const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setQuestion(e.target.value);
-  };
-
-  const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setAnswer(e.target.value);
-  };
+  // --- (No changes to hooks or handlers) ---
+  useEffect(() => { setIsFlipped(false); }, [card.id, editMode]);
+  useEffect(() => { if (question !== card.question) { const handler = setTimeout(() => { onEdit(card.id, question, answer); }, 500); return () => clearTimeout(handler); } }, [question, card.id, card.question, answer, onEdit]);
+  useEffect(() => { if (answer !== card.answer) { const handler = setTimeout(() => { onEdit(card.id, question, answer); }, 500); return () => clearTimeout(handler); } }, [answer, card.id, card.answer, question, onEdit]);
+  const handleCardClick = (e: React.MouseEvent) => { if (!editMode) { const target = e.target as HTMLElement; if (target.tagName === 'A' || target.closest('button')) { e.stopPropagation(); return; } setIsFlipped(!isFlipped); } };
+  const handleFlipButtonClick = (e: React.MouseEvent) => { e.stopPropagation(); setIsFlipped(!isFlipped); };
+  const handleRememberClick = async (e: React.MouseEvent) => { e.stopPropagation(); setIsSummaryLoading(true); try { await generateSummary(card.question, card.answer, () => {}, () => setIsSummaryLoading(false)); } catch (error) { console.error('Error generating summary:', error); setIsSummaryLoading(false); } };
+  const stopPropagation = (e: React.SyntheticEvent) => { e.stopPropagation(); };
+  const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => { setQuestion(e.target.value); };
+  const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => { setAnswer(e.target.value); };
 
   return (
     <>
-      {/* --- MODIFIED CSS KEYFRAMES --- */}
-      <style jsx>{`
-        @keyframes gradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          100% {
-            background-position: 100% 50%;
-          }
-        }
-      `}</style>
+      <style jsx>{` @keyframes gradient { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } } `}</style>
       <div
-        className={cn(
-          "relative w-full h-full min-h-[450px] group cursor-pointer",
-          "[perspective:1000px]"
-        )}
+        className={cn( "relative w-full h-full min-h-[450px] group cursor-pointer", "[perspective:1000px]" )}
         onClick={handleCardClick}
       >
         <div
-          className={cn(
-            "relative w-full h-full transition-transform duration-700",
-            "[transform-style:preserve-3d]",
-            isFlipped && "[transform:rotateY(180deg)]"
-          )}
+          className={cn( "relative w-full h-full transition-transform duration-700", "[transform-style:preserve-3d]", isFlipped && "[transform:rotateY(180deg)]" )}
         >
           {/* Card Front */}
-          <div
-            className={cn(
-              "absolute w-full h-full",
-              "[backface-visibility:hidden]"
-            )}
-          >
+          <div className={cn( "absolute w-full h-full", "[backface-visibility:hidden]" )}>
             <Card className="relative w-full h-full flex flex-col shadow-lg bg-card group-hover:shadow-[0_0_20px_hsl(var(--primary)/.4)] transition-shadow duration-300">
-              {editMode && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(card.id);
-                  }}
-                  className="absolute top-2 left-2 z-50"
-                >
-                  <X className="h-5 w-5" />
-                  <span className="sr-only">Delete Card</span>
-                </Button>
-              )}
-              <CardContent className="flex-grow flex flex-col p-6 overflow-y-auto">
-                <h3 className="text-sm font-semibold text-muted-foreground mb-2">Question</h3>
-                {editMode ? (
-                  <Textarea
-                    value={question}
-                    onChange={handleQuestionChange}
-                    onClick={stopPropagation}
-                    className="w-full flex-grow resize-none text-lg bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
-                    placeholder="Enter your question..."
-                  />
-                ) : (
-                  <div className="prose prose-invert max-w-none flex-grow">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{question}</ReactMarkdown>
-                  </div>
-                )}
+              {editMode && ( <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onDelete(card.id); }} className="absolute top-2 left-2 z-50"> <X className="h-5 w-5" /> <span className="sr-only">Delete Card</span> </Button> )}
+              {/* CHANGE: CardContent is now a standard flex-col */}
+              <CardContent className="flex-grow flex flex-col p-6">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-4 text-center">Question</h3>
+                {/* CHANGE: New wrapper div for perfect centering */}
+                <div className="flex-grow flex justify-center items-center w-full">
+                  {editMode ? (
+                    <Textarea
+                      value={question}
+                      onChange={handleQuestionChange}
+                      onClick={stopPropagation}
+                      // CHANGE: Larger, bolder, centered text for edit mode
+                      className="w-full h-full bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-center text-3xl font-semibold leading-relaxed"
+                      placeholder="Enter your question..."
+                    />
+                  ) : (
+                    // CHANGE: Larger, bolder, centered text for display mode
+                    <div className="max-w-none text-center text-3xl font-semibold leading-relaxed whitespace-pre-wrap">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{question}</ReactMarkdown>
+                    </div>
+                  )}
+                </div>
               </CardContent>
               <div className="flex justify-between items-center p-4 border-t">
-                {!editMode && (
-                  <GeminiRememberButton
-                    onClick={handleRememberClick}
-                    disabled={isSummaryLoading}
-                    isLoading={isSummaryLoading}
-                  />
-                )}
-                <Button variant="ghost" size="icon" onClick={handleFlipButtonClick}>
-                  <RotateCw className="h-5 w-5" />
-                  <span className="sr-only">Flip Card</span>
-                </Button>
+                {!editMode && ( <GeminiRememberButton onClick={handleRememberClick} disabled={isSummaryLoading} isLoading={isSummaryLoading} /> )}
+                <Button variant="ghost" size="icon" onClick={handleFlipButtonClick}> <RotateCw className="h-5 w-5" /> <span className="sr-only">Flip Card</span> </Button>
               </div>
             </Card>
           </div>
 
           {/* Card Back */}
-          <div
-            className={cn(
-              "absolute w-full h-full",
-              "[backface-visibility:hidden]",
-              "[transform:rotateY(180deg)]"
-            )}
-          >
+          <div className={cn( "absolute w-full h-full", "[backface-visibility:hidden]", "[transform:rotateY(180deg)]" )}>
             <Card className="relative w-full h-full flex flex-col shadow-lg bg-card group-hover:shadow-[0_0_20px_hsl(var(--primary)/.4)] transition-shadow duration-300">
-              <CardContent className="flex-grow flex flex-col p-6 overflow-y-auto">
-                <h3 className="text-sm font-semibold text-muted-foreground mb-2">Answer</h3>
-                {editMode ? (
-                  <Textarea
-                    value={answer}
-                    onChange={handleAnswerChange}
-                    onClick={stopPropagation}
-                    className="w-full flex-grow resize-none text-lg bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0"
-                    placeholder="Enter your answer..."
-                  />
-                ) : (
-                  <div className="prose prose-invert max-w-none flex-grow">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{answer}</ReactMarkdown>
-                  </div>
-                )}
+              {/* CHANGE: CardContent is now a standard flex-col */}
+              <CardContent className="flex-grow flex flex-col p-6">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-4 text-center">Answer</h3>
+                {/* CHANGE: New wrapper div for perfect centering */}
+                <div className="flex-grow flex justify-center items-center w-full">
+                  {editMode ? (
+                    <Textarea
+                      value={answer}
+                      onChange={handleAnswerChange}
+                      onClick={stopPropagation}
+                      // CHANGE: Larger, bolder, centered text for edit mode
+                      className="w-full h-full bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-center text-3xl font-semibold leading-relaxed"
+                      placeholder="Enter your answer..."
+                    />
+                  ) : (
+                     // CHANGE: Larger, bolder, centered text for display mode
+                    <div className="max-w-none text-center text-3xl font-semibold leading-relaxed whitespace-pre-wrap">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{answer}</ReactMarkdown>
+                    </div>
+                  )}
+                </div>
               </CardContent>
               <div className="flex justify-between items-center p-4 border-t">
-                 {/* This button doesn't need the loading state, but kept for consistency */}
-                 {!editMode && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleRememberClick}
-                    disabled={isSummaryLoading}
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white border-0 shadow-lg"
-                  >
-                    <Sparkles className="mr-2 h-4 w-4" />
-                    Remember
-                  </Button>
-                )}
-                <Button variant="ghost" size="icon" onClick={handleFlipButtonClick}>
-                  <RotateCw className="h-5 w-5" />
-                  <span className="sr-only">Flip Card</span>
-                </Button>
+                 {!editMode && ( <GeminiRememberButton onClick={handleRememberClick} disabled={isSummaryLoading} isLoading={isSummaryLoading} /> )}
+                <Button variant="ghost" size="icon" onClick={handleFlipButtonClick}> <RotateCw className="h-5 w-5" /> <span className="sr-only">Flip Card</span> </Button>
               </div>
             </Card>
           </div>

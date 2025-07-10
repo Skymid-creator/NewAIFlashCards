@@ -126,9 +126,6 @@ export default function CardListSidebar({ isOpen, onClose, cards, onReorder, onD
                 >
                     <header className="flex items-center justify-between p-4 border-b border-border">
                         <h2 className="text-lg font-semibold">Card View</h2>
-                        <Button variant="ghost" size="icon" onClick={onClose}>
-                            <X className="h-5 w-5" />
-                        </Button>
                     </header>
                     <div className="flex-1 p-4 overflow-y-auto">
                         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
