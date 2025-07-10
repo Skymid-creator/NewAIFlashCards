@@ -152,7 +152,7 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
         <SortableContext items={cards.map(card => card.id)}>
           <Carousel 
               setApi={handleApiInit} 
-              className="w-full flex-1 max-w-full transition-all duration-500"
+              className="w-full flex-1 max-w-full transition-all duration-500 px-12"
               opts={{
                   align: 'center',
                   loop: false,
@@ -190,8 +190,8 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
                   </CarouselItem>
               ))}
               </CarouselContent>
-              <CarouselPrevious className="flex" />
-              <CarouselNext className="flex" />
+              <CarouselPrevious className="flex left-8" />
+              <CarouselNext className="flex right-4" />
           </Carousel>
         </SortableContext>
         <DragOverlay>
