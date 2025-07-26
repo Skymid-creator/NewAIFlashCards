@@ -265,6 +265,10 @@ export default function Home() {
     try {
       const mindMapMarkdown = await generateMindMap({ flashcards });
       setMindMapMarkdown(mindMapMarkdown);
+      toast({
+        title: "Mind Map Ready",
+        description: "Your mind map has been generated successfully.",
+      });
     } catch (error: any) {
       console.error('Error generating mind map:', error);
       toast({

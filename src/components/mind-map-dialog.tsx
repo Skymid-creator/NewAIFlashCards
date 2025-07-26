@@ -61,6 +61,34 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
     }
   }, [isOpen, internalMarkdown]);
 
+  // Add click listener for navigation
+  useEffect(() => {
+    if (!mmRef.current) return;
+
+    const clickListener = (e: MouseEvent) => {
+      const target = e.target as SVGElement;
+      const link = target.closest('a');
+      if (link) {
+        e.preventDefault();
+        e.stopPropagation();
+        const href = link.getAttribute('href');
+        if (href && href.startsWith('flashcard://')) {
+          const flashcardId = href.substring('flashcard://'.length);
+          console.log(`Navigating to flashcard: ${flashcardId}`);
+          onNavigate(flashcardId);
+          onClose(); // Close sidebar on navigation
+        }
+      }
+    };
+
+    const svgNode = mmRef.current.svg.node();
+    svgNode.addEventListener('click', clickListener);
+
+    return () => {
+      svgNode.removeEventListener('click', clickListener);
+    };
+  }, [mmRef.current, onNavigate, onClose]);
+
   // Fit mind map when sidebar opens (with delay for animation)
   useEffect(() => {
     if (isOpen && mmRef.current && internalMarkdown) {
