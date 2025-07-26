@@ -43,7 +43,7 @@ const generateFlashcardsPrompt = geminiFlash.definePrompt({
   prompt: `You are an expert at creating flashcards. Your task is to analyze the following text and images (if provided) and generate a list of questions and answers based on them.
   Follow these rules strictly:
   Generate atomic flashcards — each flashcard should test only one fact or concept.
-  Do not leave out any information from the source.
+  Do not leave out any information from the source [VERY IMPORTANT].
   Include all content accurately and completely.
   The goal is to enable the user to fully master the material and be able to reconstruct the original source from the flashcards.
 
