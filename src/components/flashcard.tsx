@@ -70,7 +70,7 @@ const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, edit
     <>
       <style jsx>{` @keyframes gradient { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } } `}</style>
       <div
-        className={cn( "relative w-full h-full min-h-[450px] group cursor-pointer", "[perspective:1000px]" )}
+        className={cn( "relative w-full h-full group cursor-pointer", "[perspective:1000px]" )}
         onClick={handleCardClick}
       >
         <div
@@ -78,10 +78,10 @@ const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, edit
         >
           {/* Card Front */}
           <div className={cn( "absolute w-full h-full", "[backface-visibility:hidden]" )}>
-            <Card className="relative w-full h-full flex flex-col shadow-md bg-card group-hover:shadow-lg group-hover:shadow-primary/20 transition-shadow duration-300">
+            <Card className="relative w-full h-full min-h-[300px] flex flex-col shadow-md bg-card group-hover:shadow-lg group-hover:shadow-primary/20 transition-shadow duration-300">
               {editMode && ( <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onDelete(card.id); }} className="absolute top-2 left-2 z-50"> <X className="h-5 w-5" /> <span className="sr-only">Delete Card</span> </Button> )}
               {/* CHANGE: CardContent is now a standard flex-col */}
-              <CardContent className="flex-grow flex flex-col p-6">
+              <CardContent className="flex-grow flex flex-col p-6 overflow-y-auto">
                 <h3 className="text-sm font-semibold text-muted-foreground mb-4 text-center">Question</h3>
                 {/* CHANGE: New wrapper div for perfect centering */}
                 <div className="flex-grow flex justify-center items-center w-full">
@@ -91,12 +91,12 @@ const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, edit
                       onChange={handleQuestionChange}
                       onClick={stopPropagation}
                       // CHANGE: Larger, bolder, centered text for edit mode
-                      className="w-full h-full bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-center text-2xl font-semibold leading-relaxed"
+                      className="w-full h-full bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-center text-xl md:text-2xl font-semibold leading-relaxed overflow-y-auto"
                       placeholder="Enter your question..."
                     />
                   ) : (
                     // CHANGE: Larger, bolder, centered text for display mode
-                    <div className="max-w-none text-center text-2xl font-semibold leading-relaxed whitespace-pre-wrap">
+                    <div className="max-w-none text-center text-xl md:text-2xl font-semibold leading-relaxed whitespace-pre-wrap overflow-y-auto">
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{question}</ReactMarkdown>
                     </div>
                   )}
@@ -111,9 +111,9 @@ const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, edit
 
           {/* Card Back */}
           <div className={cn( "absolute w-full h-full", "[backface-visibility:hidden]", "[transform:rotateY(180deg)]" )}>
-            <Card className="relative w-full h-full flex flex-col shadow-md bg-card group-hover:shadow-lg group-hover:shadow-primary/20 transition-shadow duration-300">
+            <Card className="relative w-full h-full min-h-[300px] flex flex-col shadow-md bg-card group-hover:shadow-lg group-hover:shadow-primary/20 transition-shadow duration-300">
               {/* CHANGE: CardContent is now a standard flex-col */}
-              <CardContent className="flex-grow flex flex-col p-6">
+              <CardContent className="flex-grow flex flex-col p-6 overflow-y-auto">
                 <h3 className="text-sm font-semibold text-muted-foreground mb-4 text-center">Answer</h3>
                 {/* CHANGE: New wrapper div for perfect centering */}
                 <div className="flex-grow flex justify-center items-center w-full">
@@ -123,12 +123,12 @@ const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, edit
                       onChange={handleAnswerChange}
                       onClick={stopPropagation}
                       // CHANGE: Larger, bolder, centered text for edit mode
-                      className="w-full h-full bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-center text-2xl font-semibold leading-relaxed"
+                      className="w-full h-full bg-transparent border-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 text-center text-xl md:text-2xl font-semibold leading-relaxed overflow-y-auto"
                       placeholder="Enter your answer..."
                     />
                   ) : (
                      // CHANGE: Larger, bolder, centered text for display mode
-                    <div className="max-w-none text-center text-2xl font-semibold leading-relaxed whitespace-pre-wrap">
+                    <div className="max-w-none text-center text-xl md:text-2xl font-semibold leading-relaxed whitespace-pre-wrap overflow-y-auto">
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{answer}</ReactMarkdown>
                     </div>
                   )}

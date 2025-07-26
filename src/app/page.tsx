@@ -6,6 +6,7 @@ import { useState, useTransition, useRef, useEffect, useCallback } from 'react';
 import { BrainCircuit, Loader, Plus, Sparkles, PanelRight, Image as ImageIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { MoreOptionsDropdown } from '@/components/MoreOptionsDropdown';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { generateFlashcardsAction } from './actions';
@@ -381,15 +382,15 @@ export default function Home() {
               className="min-h-[200px] bg-card/80 backdrop-blur-sm text-base"
               rows={10}
             />
-            <div className="flex gap-2">
-              <Button onClick={handleGenerate} size="lg" className="w-full">
+            <div className="flex flex-wrap gap-2 justify-center">
+              <Button onClick={handleGenerate} size="lg" className="w-full sm:w-auto">
                 <Sparkles className="mr-2 text-accent" />
                 Generate Flashcards
               </Button>
-              <Button onClick={handleImportClick} size="lg" variant="outline">
+              <Button onClick={handleImportClick} size="lg" variant="outline" className="w-full sm:w-auto">
                 Import
               </Button>
-              <Button onClick={() => document.getElementById('file-upload')?.click()} size="lg" variant="outline">
+              <Button onClick={() => document.getElementById('file-upload')?.click()} size="lg" variant="outline" className="w-full sm:w-auto">
                 <ImageIcon className="mr-2" />
                 Add files
               </Button>
@@ -439,13 +440,13 @@ export default function Home() {
           )}
         </div>
       ) : (
-        <div className="w-full h-full flex flex-col animate-fade-in">
+        <div className="w-full h-full flex flex-col animate-fade-in min-h-[400px]">
           <header className="flex justify-between items-center mb-4 md:mb-6">
             <div className="flex items-center gap-3 text-primary">
                 <BrainCircuit size={32} strokeWidth={1.5} className="text-accent" />
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-primary from-40% to-accent">Skymid Flashcards</h1>
+                <h1 className="text-xl md:text-2xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-primary from-40% to-accent">Skymid Flashcards</h1>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2 justify-end">
               <Button onClick={() => setIsMindMapOpen(!isMindMapOpen)} variant="outline">
                 <PanelRight className="mr-2" />
                 View Mind Map
@@ -455,7 +456,7 @@ export default function Home() {
                 View Cards
               </Button>
               <div className={cn(
-                "transition-all duration-300",
+                "transition-all duration-300 hidden sm:inline-flex",
                 !editMode && "opacity-0 pointer-events-none"
               )}>
                 <Button onClick={() => setIsAdding(!isAdding)} variant="outline">
@@ -464,26 +465,33 @@ export default function Home() {
                 </Button>
               </div>
               <div className={cn(
-                "transition-all duration-300",
+                "transition-all duration-300 hidden sm:inline-flex",
                 deletedFlashcards.length === 0 && "opacity-0 pointer-events-none"
               )}>
                 <Button onClick={handleUndo} variant="outline">
                   Undo
                 </Button>
               </div>
-              <Button onClick={handleExport} variant="outline">
+              <Button onClick={handleExport} variant="outline" className="hidden sm:inline-flex">
                 Export
               </Button>
-              <Button onClick={handleImportClick} variant="outline">
+              <Button onClick={handleImportClick} variant="outline" className="hidden sm:inline-flex">
                 Import
               </Button>
-              <Button onClick={() => setEditMode(!editMode)} variant="outline">
+              <Button onClick={() => setEditMode(!editMode)} variant="outline" className="hidden sm:inline-flex">
                 {editMode ? 'Done' : 'Edit'}
               </Button>
-              <Button onClick={handleStartOver} variant="outline">
+              <Button onClick={handleStartOver} variant="outline" className="hidden sm:inline-flex">
                 <Plus className="mr-2 -rotate-45" />
                 New Set
               </Button>
+              <MoreOptionsDropdown
+                onExport={handleExport}
+                onImport={handleImportClick}
+                onNewSet={handleStartOver}
+                onEdit={() => setEditMode(!editMode)}
+                className="sm:hidden"
+              />
             </div>
           </header>
           <FlashcardCarousel
@@ -495,9 +503,10 @@ export default function Home() {
             isAddingCard={isAdding}
             scrollToIndex={currentCardIndexToScrollTo}
             onCardSelect={(index) => setActiveCardIndex(index)}
+            className="flex-grow"
           />
           {rawOutput && (
-            <div className="mt-8 w-full">
+            <div className="mt-8 w-full flex-shrink-0">
               <h2 className="text-xl font-semibold mb-2">Raw AI Output</h2>
               <Textarea
                 value={rawOutput}

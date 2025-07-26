@@ -164,7 +164,7 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
         <SortableContext items={cards.map(card => card.id)}>
           <Carousel 
               setApi={handleApiInit} 
-              className="w-full flex-1 max-w-full transition-all duration-500 px-12"
+              className="w-full flex-1 max-w-full transition-all duration-500 px-4 md:px-12"
               opts={{
                   align: 'center',
                   loop: false,
@@ -182,7 +182,7 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
                       key={card.id} 
                       className={cn(
                           "pl-8 transition-all duration-500",
-                          "basis-full md:basis-4/5 lg:basis-3/4",
+                          "basis-full md:basis-4/5 lg:basis-3/4 min-h-[400px]",
                           !editMode && (api && api.selectedScrollSnap() !== index ? "opacity-30 scale-90 blur-sm" : "opacity-100 scale-100 blur-0")
                       )}
                   >
