@@ -132,7 +132,7 @@ export default function CardListSidebar({ isOpen, onClose, cards, onReorder, onD
                             <SortableContext items={cards.map(c => c.id)} strategy={verticalListSortingStrategy}>
                                 <AddCardDropZone onClick={() => onAdd(0)} isVisible={true} />
                                 {cards.map((card, index) => (
-                                    <div key={card.id} ref={el => itemRefs.current[index] = el}>
+                                    <div key={card.id} ref={(el: HTMLDivElement | null) => { itemRefs.current[index] = el; }}>
                                         <SortableCardItem id={card.id} card={card} onDelete={onDelete} onNavigate={onNavigate} index={index} activeCardIndex={activeCardIndex} />
                                         <AddCardDropZone onClick={() => onAdd(index + 1)} isVisible={true} />
                                     </div>

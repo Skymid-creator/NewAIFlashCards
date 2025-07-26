@@ -13,7 +13,8 @@ import type { Flashcard as FlashcardType } from '@/types';
 import FlashcardCarousel from '@/components/flashcard-carousel';
 import CardListSidebar from '@/components/card-list-sidebar';
 import { Card, CardContent } from '@/components/ui/card';
-import type { CarouselApi } from '@/components/ui/carousel';
+import MindMapDialog from '@/components/mind-map-dialog';
+import { generateMindMap } from '@/ai/flows/generate-mind-map';
 
 type DeletedFlashcard = {
     card: FlashcardType;
@@ -59,6 +60,9 @@ export default function Home() {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [isMindMapOpen, setIsMindMapOpen] = useState<boolean>(false);
+  const [mindMapMarkdown, setMindMapMarkdown] = useState('');
+  const [isGeneratingMindMap, setIsGeneratingMindMap] = useState(false);
   const [activeCardIndex, setActiveCardIndex] = useState<number>(0);
   const [currentCardIndexToScrollTo, setCurrentCardIndexToScrollTo] = useState<number | null>(null);
   const [deletedFlashcards, setDeletedFlashcards] = useState<DeletedFlashcard[]>([]);
@@ -252,6 +256,27 @@ export default function Home() {
     });
   };
 
+  const handleGenerateMindMap = useCallback(async () => {
+    if (flashcards.length === 0) {
+      return;
+    }
+    setIsGeneratingMindMap(true);
+    setMindMapMarkdown('');
+    try {
+      const mindMapMarkdown = await generateMindMap({ flashcards });
+      setMindMapMarkdown(mindMapMarkdown);
+    } catch (error: any) {
+      console.error('Error generating mind map:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to generate mind map. Please try again.',
+      });
+    } finally {
+      setIsGeneratingMindMap(false);
+    }
+  }, [flashcards, toast]);
+
   const handleEdit = useCallback((id: string, newQuestion: string, newAnswer: string) => {
     setFlashcards(prev =>
       prev.map(card =>
@@ -294,6 +319,7 @@ export default function Home() {
     setFlashcards([]);
     setText('');
     setFiles([]);
+    setMindMapMarkdown('');
   };
 
   const handleAddCard = useCallback((index: number) => {
@@ -416,6 +442,10 @@ export default function Home() {
                 <h1 className="text-2xl md:text-3xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-br from-primary from-40% to-accent">Skymid Flashcards</h1>
             </div>
             <div className="flex gap-2">
+              <Button onClick={() => setIsMindMapOpen(!isMindMapOpen)} variant="outline">
+                <PanelRight className="mr-2" />
+                View Mind Map
+              </Button>
               <Button onClick={() => setIsSidebarOpen(!isSidebarOpen)} variant="outline">
                 <PanelRight className="mr-2" />
                 View Cards
@@ -484,6 +514,16 @@ export default function Home() {
         onAdd={handleAddCard}
         onNavigate={handleNavigate}
         activeCardIndex={activeCardIndex}
+      />
+      <MindMapDialog
+        isOpen={isMindMapOpen}
+        onClose={() => setIsMindMapOpen(false)}
+        flashcards={flashcards}
+        onNavigate={handleNavigate}
+        markdown={mindMapMarkdown}
+        onGenerate={handleGenerateMindMap}
+        isGenerating={isGeneratingMindMap}
+        onClear={() => setMindMapMarkdown('')}
       />
     <input
         type="file"

@@ -168,7 +168,6 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
               opts={{
                   align: 'center',
                   loop: false,
-                  draggable: false,
               }}
               editMode={editMode}
           >
@@ -225,3 +224,4 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
         </div>
     </div>
   );
+}

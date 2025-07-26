@@ -7,12 +7,6 @@ const nextConfig: NextConfig = {
     },
   },
   serverExternalPackages: ["pdf-parse"],
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      config.externals.push('pdf-parse');
-    }
-    return config;
-  },
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,

@@ -31,6 +31,6 @@ export const summarizeAndHighlightCard = gemma.defineFlow(
     });
 
     console.log('Gemma generate result:', result);
-    return result.custom.text();
+    return (result.custom as any).text();
   }
 );

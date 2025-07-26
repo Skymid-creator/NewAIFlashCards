@@ -14,7 +14,7 @@ export async function generateFlashcardsAction(formData: FormData) {
     const text = formData.get('text') as string;
     const files = formData.getAll('files') as File[];
 
-    const fileParts: { url?: string, contentType?: string, text?: string }[] = await Promise.all(files.map(async (file) => {
+    const fileParts: ({ url: string, contentType: string } | { text: string })[] = await Promise.all(files.map(async (file) => {
       if (file.type.startsWith('image/')) {
         const tempDir = os.tmpdir();
         const tempFilePath = path.join(tempDir, file.name);
@@ -30,12 +30,17 @@ export async function generateFlashcardsAction(formData: FormData) {
         const arrayBuffer = await file.arrayBuffer();
         const data = await pdf(Buffer.from(arrayBuffer));
         return { text: data.text };
-      } else {
-        return {}; // Should not happen if frontend filters correctly
       }
+      // If the file type is neither image nor PDF, return an object that doesn't match the expected types
+      // This case should ideally be handled by frontend filtering.
+      return { url: '', contentType: '' }; // Fallback for unexpected file types
     }));
 
-    const { flashcards, rawOutput, logs } = await generateFlashcards({ text, images: fileParts.filter(part => part.url), pdfText: fileParts.filter(part => part.text).map(part => part.text).join('\n\n') });
+    const { flashcards, rawOutput, logs } = await generateFlashcards({
+      text,
+      images: fileParts.filter((part): part is { url: string, contentType: string } => 'url' in part && part.url !== ''),
+      pdfText: fileParts.filter((part): part is { text: string } => 'text' in part).map(part => part.text).join('\n\n'),
+    });
 
     // The flow now throws on error, so if we get here, the output should be valid.
     if (!flashcards) {

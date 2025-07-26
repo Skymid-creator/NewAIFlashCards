@@ -66,7 +66,9 @@ Your response MUST be a valid JSON object and nothing else.
 
 6.  **Implicit Tables:** If the input text or extracted image text contains structured data that naturally lends itself to a tabular representation (e.g., lists of items with properties, comparisons, structured data), create a markdown table in the flashcard's "answer" field, even if the original source did not explicitly provide a table. Ensure the table is clear, concise, and enhances understanding.
 
-5. **Unwanted text:** If the input contain unwanted text which cannot be made into flashcards, ignore them
+7. **Unwanted text:** If the input contain unwanted text which cannot be made into flashcards, ignore them
+
+8. **Response Size:** Be mindful of the total response size. If a markdown table or a long answer is causing the response to be too large, either summarize the information or split it into multiple, smaller flashcards to avoid truncation.
 
 **Important Rules:**
 - Your output must ONLY be the JSON object. Do not add any introductory text like "Here are the flashcards...".
@@ -117,6 +119,15 @@ const generateFlashcardsFlow = geminiFlash.defineFlow(
     let rawText = text;
     console.log('Raw AI output:', rawText); // Log raw output for debugging
 
+    // Strip markdown code block fences
+    if (rawText.startsWith('```json')) {
+      rawText = rawText.substring(7);
+    }
+    if (rawText.endsWith('```')) {
+      rawText = rawText.slice(0, -3);
+    }
+    rawText = rawText.trim();
+
     // Robustly extract JSON by finding the first { and last }
     const jsonStartIndex = rawText.indexOf('{');
     const jsonEndIndex = rawText.lastIndexOf('}');
@@ -126,18 +137,24 @@ const generateFlashcardsFlow = geminiFlash.defineFlow(
     }
 
     const jsonString = rawText.substring(jsonStartIndex, jsonEndIndex + 1);
-    // Fix bad escaped characters in AI response, specifically \" which breaks JSON
-    const cleanedJsonString = jsonString.replace(/\\"/g, '"');
 
     let parsedOutput: Omit<GenerateFlashcardsOutput, 'rawOutput'>;
     try {
-      parsedOutput = JSON.parse(cleanedJsonString);
+      parsedOutput = JSON.parse(jsonString);
       log('AI response parsed successfully.');
     } catch (e) {
-      throw new Error(`Failed to parse AI response as JSON: ${e.message}. Attempted to parse: ${jsonString}`);
+      // If parsing fails, try to repair the JSON string
+      log('Failed to parse JSON, attempting to repair...');
+      const repairedJsonString = jsonString.replace(/,s*]/g, ']').replace(/,s*}/g, '}');
+      try {
+        parsedOutput = JSON.parse(repairedJsonString);
+        log('Successfully parsed repaired JSON.');
+      } catch (e2: any) {
+        throw new Error(`Failed to parse AI response as JSON, even after repair: ${e2.message}. Attempted to parse: ${repairedJsonString}`);
+      }
     }
 
-    if (!parsedOutput || !Array.isArray(parsedOutput.flashcards)) {
+    if (!parsedOutput || !Array.isArray(parsedOutput.flashcards) || parsedOutput.flashcards.length === 0) {
       throw new Error("The AI model returned a malformed or empty response. Please try again.");
     }
 
