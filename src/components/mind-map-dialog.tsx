@@ -4,6 +4,7 @@ import { Markmap } from 'markmap-view';
 import { Transformer } from 'markmap-lib';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X, CheckCircle, ChevronDown } from 'lucide-react';
+import { zoomIdentity, zoomTransform } from 'd3-zoom';
 
 interface MindMapDialogProps {
   isOpen: boolean;
@@ -15,6 +16,8 @@ interface MindMapDialogProps {
   isGenerating: boolean;
   onClear: () => void;
 }
+
+type ViewTransform = { k: number; x: number; y: number };
 
 const MindMapDialog: React.FC<MindMapDialogProps> = ({
   isOpen,
@@ -30,82 +33,90 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
   const mmRef = useRef<Markmap>();
   const downloadMenuRef = useRef<HTMLDivElement>(null);
 
-  // Store markdown internally to persist across open/close
   const [internalMarkdown, setInternalMarkdown] = useState('');
   const [hasGenerated, setHasGenerated] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
-
-  // Store expanded node paths to persist across open/close
+  
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
+  const [viewTransform, setViewTransform] = useState<ViewTransform | null>(null);
+  
+  // Track if this is the initial load for new markdown
+  const [isNewMarkdown, setIsNewMarkdown] = useState(false);
 
-  // Update internal markdown when prop changes
   useEffect(() => {
     if (markdown && markdown !== internalMarkdown) {
       console.log('New markdown received:', markdown.substring(0, 100) + '...');
       setInternalMarkdown(markdown);
       setHasGenerated(true);
-      setExpandedPaths(new Set()); // Clear expanded state for new mindmap
+      setExpandedPaths(new Set()); 
+      setIsNewMarkdown(true); // Mark as new content
       setShowNotification(true);
       
-      // Hide notification after 3 seconds
       setTimeout(() => setShowNotification(false), 3000);
     }
   }, [markdown, internalMarkdown]);
 
-  // Function to get node path for unique identification
   const getNodePath = (node: any, path: string = ''): string => {
     const nodeText = node.content || node.v || '';
     return path ? `${path}>${nodeText}` : nodeText;
   };
 
-  // Function to collapse nodes recursively and restore state
   const setNodeFoldState = (node: any, path: string = '') => {
     if (!node) return;
-    
     const currentPath = getNodePath(node, path);
-    
     if (node.children && node.children.length > 0) {
-      // For root node, keep it expanded
       if (path === '') {
         node.payload = { ...node.payload, fold: 0 };
       } else {
-        // For other nodes, check if they should be expanded based on saved state
         const shouldExpand = expandedPaths.has(currentPath);
         node.payload = { ...node.payload, fold: shouldExpand ? 0 : 1 };
       }
-      
-      // Recursively process children
       node.children.forEach((child: any) => {
         setNodeFoldState(child, currentPath);
       });
     }
   };
 
-  // Function to save current expanded state
   const saveExpandedState = () => {
     if (!mmRef.current?.state?.data) return;
-    
     const newExpandedPaths = new Set<string>();
-    
     const traverseNode = (node: any, path: string = '') => {
       if (!node) return;
-      
       const currentPath = getNodePath(node, path);
-      
-      // If node has children and is not folded, it's expanded
       if (node.children && node.children.length > 0 && node.payload?.fold !== 1) {
         newExpandedPaths.add(currentPath);
-        
         node.children.forEach((child: any) => {
           traverseNode(child, currentPath);
         });
       }
     };
-    
     traverseNode(mmRef.current.state.data);
     setExpandedPaths(newExpandedPaths);
     console.log('Saved expanded paths:', Array.from(newExpandedPaths));
+  };
+
+  const saveViewState = () => {
+    if (mmRef.current?.svg?.node()) {
+      const transform = zoomTransform(mmRef.current.svg.node());
+      setViewTransform({ k: transform.k, x: transform.x, y: transform.y });
+      console.log('View state saved:', transform);
+    }
+  };
+
+  // Restore view transform with smooth transition
+  const restoreViewState = (mm: Markmap) => {
+    if (viewTransform) {
+      console.log('Restoring view state:', viewTransform);
+      const d3Transform = zoomIdentity
+        .translate(viewTransform.x, viewTransform.y)
+        .scale(viewTransform.k);
+      
+      // Apply transform smoothly
+      mm.svg.transition()
+        .duration(300)
+        .call(mm.zoom.transform, d3Transform);
+    }
   };
 
   // Create and destroy mind map instance
@@ -114,33 +125,89 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
       const transformer = new Transformer();
       const { root } = transformer.transform(internalMarkdown);
       
-      console.log('Creating new Markmap instance on open');
+      console.log('Creating new Markmap instance');
       
       setNodeFoldState(root);
       
       const mm = Markmap.create(svgRef.current, {
-        autoFit: true,
+        autoFit: false, // Prevent automatic zoom changes
         duration: 300
       }, root);
       mmRef.current = mm;
 
+      // Handle initial view setup
+      if (isNewMarkdown) {
+        // For new content, fit to view and then save the position
+        console.log('New markdown - fitting to view');
+        mm.fit();
+        setIsNewMarkdown(false);
+        // Save the initial fitted position
+        setTimeout(() => saveViewState(), 400);
+      } else if (viewTransform) {
+        // For existing content, restore the saved position
+        setTimeout(() => restoreViewState(mm), 100);
+      } else {
+        // Fallback: fit to view
+        mm.fit();
+        setTimeout(() => saveViewState(), 400);
+      }
+
+      // Save state on user interactions
+      const svgNode = mm.svg.node();
+      const handleInteractionEnd = () => saveViewState();
+      
+      // Debounce the save to avoid excessive calls
+      let saveTimeout: NodeJS.Timeout;
+      const debouncedSave = () => {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+          saveViewState();
+        }, 150);
+      };
+      
+      svgNode.addEventListener('mouseup', debouncedSave);
+      svgNode.addEventListener('touchend', debouncedSave);
+      svgNode.addEventListener('wheel', debouncedSave);
+      
+      // Override rescale to save expansion state and maintain view
       const originalRescale = mm.rescale.bind(mm);
       mm.rescale = function(...args: any[]) {
+        // Save current transform before rescaling
+        const currentTransform = zoomTransform(svgNode);
+        
         const result = originalRescale(...args);
+        
+        // Save expanded state
         setTimeout(() => {
           saveExpandedState();
-        }, 50);
+          
+          // Restore view position after expansion/collapse
+          if (currentTransform && (currentTransform.k !== 1 || currentTransform.x !== 0 || currentTransform.y !== 0)) {
+            const newTransform = zoomIdentity
+              .translate(currentTransform.x, currentTransform.y)
+              .scale(currentTransform.k);
+            mm.zoom.transform(mm.svg, newTransform);
+            saveViewState();
+          }
+        }, 350);
+        
         return result;
       };
 
       return () => {
         console.log('Destroying Markmap instance');
         saveExpandedState();
+        saveViewState(); 
+        
+        clearTimeout(saveTimeout);
+        svgNode.removeEventListener('mouseup', debouncedSave);
+        svgNode.removeEventListener('touchend', debouncedSave);
+        svgNode.removeEventListener('wheel', debouncedSave);
         mm.destroy();
         mmRef.current = undefined;
       };
     }
-  }, [isOpen, internalMarkdown, expandedPaths.size]);
+  }, [isOpen, internalMarkdown, isNewMarkdown]); // Include isNewMarkdown in dependencies
 
   // Add click listener for navigation
   useEffect(() => {
@@ -148,6 +215,10 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
 
     const clickListener = (e: MouseEvent) => {
       const target = e.target as SVGElement;
+      
+      // Prevent navigation when clicking the fold/unfold button
+      if (target.closest('.markmap-fold')) return;
+
       const link = target.closest('a');
       if (link) {
         e.preventDefault();
@@ -170,18 +241,6 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
     };
   }, [mmRef.current, onNavigate, onClose]);
 
-  // Fit mind map when sidebar opens
-  useEffect(() => {
-    if (isOpen && mmRef.current && internalMarkdown) {
-      const timer = setTimeout(() => {
-        console.log('Fitting mind map after sidebar animation');
-        mmRef.current?.fit();
-      }, 350);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, internalMarkdown]);
-
   // Click outside handler for download menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -203,6 +262,8 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
     setInternalMarkdown('');
     setHasGenerated(false);
     setExpandedPaths(new Set());
+    setViewTransform(null); 
+    setIsNewMarkdown(false);
     setShowNotification(false);
     onClear();
   };
@@ -210,6 +271,8 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
   const handleGenerate = () => {
     console.log('Generate button clicked');
     setExpandedPaths(new Set());
+    setViewTransform(null); // Reset view for regeneration
+    setIsNewMarkdown(true); // Mark as new content
     onGenerate();
   };
 
@@ -224,6 +287,7 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
     try {
       const currentMm = mmRef.current;
       const originalState = currentMm.state.data;
+      const originalTransform = zoomTransform(currentMm.svg.node());
       
       const transformer = new Transformer();
       const { root } = transformer.transform(internalMarkdown);
@@ -255,15 +319,20 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
+        // Restore original state and view
         currentMm.setData(originalState);
-        setTimeout(() => currentMm.fit(), 100);
+        setTimeout(() => {
+          const restoreTransform = zoomIdentity
+            .translate(originalTransform.x, originalTransform.y)
+            .scale(originalTransform.k);
+          currentMm.zoom.transform(currentMm.svg, restoreTransform);
+        }, 100);
         return;
       }
 
       const svgEl = currentMm.svg.node() as SVGSVGElement;
       const bbox = svgEl.getBBox();
       
-      // Quality settings with reduced padding for better screen real estate usage
       const qualitySettings = {
         standard: { scale: 2, padding: 40 },
         high: { scale: 4, padding: 40 },
@@ -285,7 +354,6 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
 
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-      
       ctx.scale(scale, scale);
       
       const svgData = createHighQualitySVG(svgEl, bbox, padding, scale);
@@ -311,8 +379,14 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
           console.error('Error during canvas rendering:', error);
           alert('Failed to generate image. Please try again.');
         } finally {
+          // Restore original state and view
           currentMm.setData(originalState);
-          setTimeout(() => currentMm.fit(), 100);
+          setTimeout(() => {
+            const restoreTransform = zoomIdentity
+              .translate(originalTransform.x, originalTransform.y)
+              .scale(originalTransform.k);
+            currentMm.zoom.transform(currentMm.svg, restoreTransform);
+          }, 100);
         }
       };
 
@@ -320,7 +394,12 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
         console.error('Failed to load SVG image:', error);
         alert('Failed to process SVG for download. Please try again.');
         currentMm.setData(originalState);
-        setTimeout(() => currentMm.fit(), 100);
+        setTimeout(() => {
+          const restoreTransform = zoomIdentity
+            .translate(originalTransform.x, originalTransform.y)
+            .scale(originalTransform.k);
+          currentMm.zoom.transform(currentMm.svg, restoreTransform);
+        }, 100);
       };
 
       const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
@@ -332,7 +411,6 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
     }
   };
   
-  // Helper function to create high-quality SVG with reduced default padding
   const createHighQualitySVG = (svgEl: SVGSVGElement, bbox?: DOMRect, padding = 40, scale = 4): string => {
     const actualBbox = bbox || svgEl.getBBox();
     const svgClone = svgEl.cloneNode(true) as SVGSVGElement;
@@ -370,20 +448,31 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
   };
 
   const handleClose = () => {
+    // Always save state before closing
     saveExpandedState();
+    saveViewState();
     onClose();
   };
+
+  // Save state when dialog becomes hidden (but don't clear the markmap)
+  useEffect(() => {
+    if (!isOpen && mmRef.current) {
+      console.log('Dialog closed - saving final state');
+      saveExpandedState();
+      saveViewState();
+    }
+  }, [isOpen]);
 
   return (
     <>
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed top-0 right-0 h-full w-full max-w-4xl bg-background/95 backdrop-blur-xl border-l border-border shadow-2xl z-50 flex flex-col"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="fixed inset-0 bg-background/95 backdrop-blur-xl z-50 flex flex-col"
           >
             <style>{`.markmap-node text { font-size: 14px; font-family: var(--font-sans); } .markmap-node a { cursor: pointer; } .markmap-node rect { stroke: hsl(var(--border)); stroke-width: 1.5px; fill: hsl(var(--card)); rx: 8px; ry: 8px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); transition: all 0.2s ease-in-out; } .markmap-node:hover > rect { fill: hsl(var(--accent)); stroke: hsl(var(--accent-foreground)); } .markmap-node:hover > text a { fill: hsl(var(--accent-foreground)); } .markmap-link { stroke: hsl(var(--primary)/0.5); stroke-width: 2px; } .markmap-fold { cursor: pointer; }`}</style>
             
@@ -401,11 +490,11 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
               )}
             </AnimatePresence>
             
-            <header className="flex items-center justify-between p-4 border-b border-border bg-background/50">
+            <header className="flex items-center justify-between p-4 border-b border-border bg-background/50 flex-shrink-0">
               <div>
                 <h2 className="text-lg font-semibold">Mind Map</h2>
                 {hasGenerated && (
-                  <p className="text-sm text-muted-foreground">Click on node dots to expand/collapse</p>
+                  <p className="text-sm text-muted-foreground">Click on node dots to expand/collapse • Drag to pan • Scroll to zoom</p>
                 )}
               </div>
               <div className="flex items-center gap-2">
