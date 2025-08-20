@@ -3,8 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Markmap } from 'markmap-view';
 import { Transformer } from 'markmap-lib';
 import { AnimatePresence, motion } from 'framer-motion';
-import { X, CheckCircle, ChevronDown } from 'lucide-react';
+import { X, CheckCircle, ChevronDown, Paintbrush } from 'lucide-react';
 import { zoomIdentity, zoomTransform } from 'd3-zoom';
+import { select } from 'd3-selection';
 
 interface MindMapDialogProps {
   isOpen: boolean;
@@ -32,11 +33,15 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const mmRef = useRef<Markmap>();
   const downloadMenuRef = useRef<HTMLDivElement>(null);
+  const styleRef = useRef<HTMLStyleElement>(null);
 
   const [internalMarkdown, setInternalMarkdown] = useState('');
   const [hasGenerated, setHasGenerated] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
+  const [isHighlightMode, setIsHighlightMode] = useState(false);
+  const [highlightColor, setHighlightColor] = useState('yellow');
+  const [highlightedNodes, setHighlightedNodes] = useState<Record<string, string>>({});
   
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
   const [viewTransform, setViewTransform] = useState<ViewTransform | null>(null);
@@ -209,12 +214,35 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
     }
   }, [isOpen, internalMarkdown, isNewMarkdown]); // Include isNewMarkdown in dependencies
 
-  // Add click listener for navigation
+  // Add click listener for navigation and highlighting
   useEffect(() => {
     if (!mmRef.current) return;
 
     const clickListener = (e: MouseEvent) => {
       const target = e.target as SVGElement;
+      const nodeEl = target.closest('.markmap-node');
+
+      if (isHighlightMode) {
+        if (nodeEl) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const d3selection = select(nodeEl);
+          const nodeData = d3selection.datum() as any;
+          const nodeKey = nodeData.state.key;
+
+          setHighlightedNodes(prev => {
+            const newHighlightedNodes = { ...prev };
+            if (newHighlightedNodes[nodeKey]) {
+              delete newHighlightedNodes[nodeKey];
+            } else {
+              newHighlightedNodes[nodeKey] = highlightColor;
+            }
+            return newHighlightedNodes;
+          });
+        }
+        return;
+      }
       
       // Prevent navigation when clicking the fold/unfold button
       if (target.closest('.markmap-fold')) return;
@@ -239,7 +267,25 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
     return () => {
       svgNode.removeEventListener('click', clickListener);
     };
-  }, [mmRef.current, onNavigate, onClose]);
+  }, [mmRef.current, onNavigate, onClose, isHighlightMode, highlightColor]);
+
+  // Apply highlight classes to nodes
+  useEffect(() => {
+    if (!mmRef.current || !hasGenerated) return;
+
+    mmRef.current.svg.selectAll('.markmap-node').each(function() {
+      const d3selection = select(this);
+      const nodeData = d3selection.datum() as any;
+      const nodeKey = nodeData.state.key;
+      const color = highlightedNodes[nodeKey];
+
+      this.classList.remove('highlight-yellow', 'highlight-blue', 'highlight-green', 'highlight-red');
+
+      if (color) {
+        this.classList.add(`highlight-${color}`);
+      }
+    });
+  }, [highlightedNodes, hasGenerated, isOpen]);
 
   // Click outside handler for download menu
   useEffect(() => {
@@ -276,6 +322,115 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
     onGenerate();
   };
 
+  const prepareMindmapForDownload = async (mm: Markmap) => {
+    const originalState = mm.state.data;
+    const originalTransform = zoomTransform(mm.svg.node());
+
+    const transformer = new Transformer();
+    const { root } = transformer.transform(internalMarkdown);
+
+    const traverseAndExpand = (node: any) => {
+      if (node.children) {
+        node.payload = { ...node.payload, fold: 0 };
+        node.children.forEach(traverseAndExpand);
+      }
+    };
+    traverseAndExpand(root);
+
+    mm.setData(root);
+    await new Promise(resolve => setTimeout(resolve, 200));
+    await mm.fit();
+    await new Promise(resolve => setTimeout(resolve, 600));
+
+    return { originalState, originalTransform };
+  };
+
+  const restoreMindmapView = (mm: Markmap, originalState: any, originalTransform: any) => {
+    mm.setData(originalState);
+    setTimeout(() => {
+      const restoreTransform = zoomIdentity
+        .translate(originalTransform.x, originalTransform.y)
+        .scale(originalTransform.k);
+      mm.zoom.transform(mm.svg, restoreTransform);
+    }, 100);
+  };
+
+  const downloadAsSvg = (mm: Markmap) => {
+    const svgEl = mm.svg.node() as SVGSVGElement;
+    const styles = styleRef.current?.textContent || '';
+    const svgData = createHighQualitySVG(svgEl, styles);
+
+    const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mind-map.svg';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadAsPng = (mm: Markmap, quality: 'standard' | 'high' | 'ultra') => {
+    const svgEl = mm.svg.node() as SVGSVGElement;
+    const bbox = svgEl.getBBox();
+    const styles = styleRef.current?.textContent || '';
+
+    const qualitySettings = {
+      standard: { scale: 2, padding: 40 },
+      high: { scale: 4, padding: 40 },
+      ultra: { scale: 6, padding: 40 }
+    };
+
+    const settings = qualitySettings[quality];
+    const scale = settings.scale;
+    const padding = settings.padding;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = (bbox.width + padding * 2) * scale;
+    canvas.height = (bbox.height + padding * 2) * scale;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Could not get canvas context');
+    }
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.scale(scale, scale);
+
+    const svgData = createHighQualitySVG(svgEl, styles, bbox, padding, scale);
+
+    const img = new Image();
+    img.onload = () => {
+      try {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width / scale, canvas.height / scale);
+        
+        const pngUrl = canvas.toDataURL('image/png', 1.0);
+        const a = document.createElement('a');
+        a.href = pngUrl;
+        a.download = `mind-map-${quality}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(img.src);
+        console.log(`Mind map download complete (${quality} quality, ${scale}x scale).`);
+      } catch (error) {
+        console.error('Error during canvas rendering:', error);
+        alert('Failed to generate image. Please try again.');
+      }
+    };
+
+    img.onerror = (error) => {
+      console.error('Failed to load SVG image:', error);
+      alert('Failed to process SVG for download. Please try again.');
+    };
+
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    img.src = URL.createObjectURL(svgBlob);
+  };
+
   const handleDownload = async (format: 'png' | 'svg' = 'png', quality: 'standard' | 'high' | 'ultra' = 'high') => {
     if (!internalMarkdown || !mmRef.current) {
       console.error('No markdown or markmap instance available for download');
@@ -283,154 +438,40 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
     }
 
     console.log(`Starting mind map download in ${format} format with ${quality} quality...`);
+    const currentMm = mmRef.current;
+    let originalState: any, originalTransform: any;
 
     try {
-      const currentMm = mmRef.current;
-      const originalState = currentMm.state.data;
-      const originalTransform = zoomTransform(currentMm.svg.node());
-      
-      const transformer = new Transformer();
-      const { root } = transformer.transform(internalMarkdown);
-      
-      const traverseAndExpand = (node: any) => {
-        if (node.children) {
-          node.payload = { ...node.payload, fold: 0 };
-          node.children.forEach(traverseAndExpand);
-        }
-      };
-      traverseAndExpand(root);
-
-      currentMm.setData(root);
-      await new Promise(resolve => setTimeout(resolve, 200));
-      await currentMm.fit();
-      await new Promise(resolve => setTimeout(resolve, 600));
+      ({ originalState, originalTransform } = await prepareMindmapForDownload(currentMm));
 
       if (format === 'svg') {
-        const svgEl = currentMm.svg.node() as SVGSVGElement;
-        const svgData = createHighQualitySVG(svgEl);
-        
-        const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'mind-map.svg';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        // Restore original state and view
-        currentMm.setData(originalState);
-        setTimeout(() => {
-          const restoreTransform = zoomIdentity
-            .translate(originalTransform.x, originalTransform.y)
-            .scale(originalTransform.k);
-          currentMm.zoom.transform(currentMm.svg, restoreTransform);
-        }, 100);
-        return;
+        downloadAsSvg(currentMm);
+      } else {
+        downloadAsPng(currentMm, quality);
       }
-
-      const svgEl = currentMm.svg.node() as SVGSVGElement;
-      const bbox = svgEl.getBBox();
-      
-      const qualitySettings = {
-        standard: { scale: 2, padding: 40 },
-        high: { scale: 4, padding: 40 },
-        ultra: { scale: 6, padding: 40 }
-      };
-      
-      const settings = qualitySettings[quality];
-      const scale = settings.scale;
-      const padding = settings.padding;
-
-      const canvas = document.createElement('canvas');
-      canvas.width = (bbox.width + padding * 2) * scale;
-      canvas.height = (bbox.height + padding * 2) * scale;
-      
-      const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        throw new Error('Could not get canvas context');
-      }
-
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.scale(scale, scale);
-      
-      const svgData = createHighQualitySVG(svgEl, bbox, padding, scale);
-
-      const img = new Image();
-      img.onload = () => {
-        try {
-          ctx.fillStyle = 'white';
-          ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
-          ctx.drawImage(img, 0, 0, canvas.width / scale, canvas.height / scale);
-          
-          const pngUrl = canvas.toDataURL('image/png', 1.0);
-          const a = document.createElement('a');
-          a.href = pngUrl;
-          a.download = `mind-map-${quality}.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(img.src);
-          
-          console.log(`Mind map download complete (${quality} quality, ${scale}x scale).`);
-        } catch (error) {
-          console.error('Error during canvas rendering:', error);
-          alert('Failed to generate image. Please try again.');
-        } finally {
-          // Restore original state and view
-          currentMm.setData(originalState);
-          setTimeout(() => {
-            const restoreTransform = zoomIdentity
-              .translate(originalTransform.x, originalTransform.y)
-              .scale(originalTransform.k);
-            currentMm.zoom.transform(currentMm.svg, restoreTransform);
-          }, 100);
-        }
-      };
-
-      img.onerror = (error) => {
-        console.error('Failed to load SVG image:', error);
-        alert('Failed to process SVG for download. Please try again.');
-        currentMm.setData(originalState);
-        setTimeout(() => {
-          const restoreTransform = zoomIdentity
-            .translate(originalTransform.x, originalTransform.y)
-            .scale(originalTransform.k);
-          currentMm.zoom.transform(currentMm.svg, restoreTransform);
-        }, 100);
-      };
-
-      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
-      img.src = URL.createObjectURL(svgBlob);
-
     } catch (error) {
       console.error('Error during mind map download:', error);
       alert('Failed to download mind map. Please try again.');
+    } finally {
+      if (originalState && originalTransform) {
+        restoreMindmapView(currentMm, originalState, originalTransform);
+      }
     }
   };
   
-  const createHighQualitySVG = (svgEl: SVGSVGElement, bbox?: DOMRect, padding = 40, scale = 4): string => {
+  const createHighQualitySVG = (svgEl: SVGSVGElement, styles: string, bbox?: DOMRect, padding = 40, scale = 4): string => {
     const actualBbox = bbox || svgEl.getBBox();
     const svgClone = svgEl.cloneNode(true) as SVGSVGElement;
     
-    const highQualityStyles = `
-      <defs>
-        <style type="text/css">
-          <![CDATA[
-          .markmap-node text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: ${14 * Math.min(scale / 4, 1.5)}px; font-weight: 500; fill: #1f2937; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-          .markmap-node rect { stroke: #d1d5db; stroke-width: ${1.5 * Math.min(scale / 4, 1.2)}px; fill: #ffffff; rx: ${8 * Math.min(scale / 4, 1.2)}px; ry: ${8 * Math.min(scale / 4, 1.2)}px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
-          .markmap-link { stroke: #6b7280; stroke-width: ${2 * Math.min(scale / 4, 1.2)}px; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-          .markmap-fold circle { fill: #ffffff; stroke: #6b7280; stroke-width: ${2 * Math.min(scale / 4, 1.2)}px; }
-          ]]>
-        </style>
-      </defs>
-    `;
+    const styleEl = document.createElement('style');
+    styleEl.textContent = styles;
+
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    defs.appendChild(styleEl);
     
     const existingStyles = svgClone.querySelectorAll('style, defs');
     existingStyles.forEach(el => el.remove());
-    svgClone.insertAdjacentHTML('afterbegin', highQualityStyles);
+    svgClone.insertAdjacentElement('afterbegin', defs);
     
     const finalWidth = actualBbox.width + padding * 2;
     const finalHeight = actualBbox.height + padding * 2;
@@ -474,7 +515,69 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
             transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="fixed inset-0 bg-background/95 backdrop-blur-xl z-50 flex flex-col"
           >
-            <style>{`.markmap-node text { font-size: 14px; font-family: var(--font-sans); } .markmap-node a { cursor: pointer; } .markmap-node rect { stroke: hsl(var(--border)); stroke-width: 1.5px; fill: hsl(var(--card)); rx: 8px; ry: 8px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); transition: all 0.2s ease-in-out; } .markmap-node:hover > rect { fill: hsl(var(--accent)); stroke: hsl(var(--accent-foreground)); } .markmap-node:hover > text a { fill: hsl(var(--accent-foreground)); } .markmap-link { stroke: hsl(var(--primary)/0.5); stroke-width: 2px; } .markmap-fold { cursor: pointer; }`}</style>
+            <style ref={styleRef}>{`
+              .markmap-node text {
+                font-size: 15px;
+                font-family: var(--font-sans);
+                fill: hsl(var(--foreground));
+              }
+              .markmap-node a {
+                cursor: pointer;
+              }
+              .markmap-node rect {
+                stroke: hsl(var(--border));
+                stroke-width: 1px;
+                fill: hsl(var(--card));
+                rx: 8px;
+                ry: 8px;
+                filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
+                transition: all 0.2s ease-in-out;
+              }
+              .markmap-node:hover > rect {
+                stroke: hsl(var(--primary));
+                fill: hsl(var(--accent));
+              }
+              .markmap-node:hover > text a {
+                fill: hsl(var(--accent-foreground));
+              }
+              .markmap-link {
+                stroke: hsl(var(--border));
+                stroke-width: 1px;
+              }
+              .markmap-fold {
+                cursor: pointer;
+              }
+              .markmap-fold circle {
+                fill: hsl(var(--background));
+                stroke: hsl(var(--border));
+                stroke-width: 1px;
+                transition: all 0.2s ease-in-out;
+              }
+              .markmap-fold:hover circle {
+                fill: hsl(var(--accent));
+                stroke: hsl(var(--primary));
+              }
+              .markmap-node.highlighted > rect {
+                stroke: hsl(var(--primary));
+                stroke-width: 2px;
+              }
+              .markmap-node.highlight-yellow > rect {
+                fill: #fffbeb;
+                stroke: #fde047;
+              }
+              .markmap-node.highlight-blue > rect {
+                fill: #eff6ff;
+                stroke: #60a5fa;
+              }
+              .markmap-node.highlight-green > rect {
+                fill: #f0fdf4;
+                stroke: #4ade80;
+              }
+              .markmap-node.highlight-red > rect {
+                fill: #fef2f2;
+                stroke: #f87171;
+              }
+            `}</style>
             
             <AnimatePresence>
               {showNotification && (
@@ -504,6 +607,34 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
                 <Button onClick={handleClear} disabled={!hasGenerated || isGenerating} variant="outline">
                   Clear
                 </Button>
+
+                <div className="h-8 w-px bg-border" />
+
+                <Button
+                  onClick={() => setIsHighlightMode(!isHighlightMode)}
+                  variant={isHighlightMode ? 'secondary' : 'outline'}
+                  size="icon"
+                  title="Highlight Mode"
+                  disabled={!hasGenerated || isGenerating}
+                >
+                  <Paintbrush className="h-4 w-4" />
+                </Button>
+
+                <AnimatePresence>
+                  {isHighlightMode && (
+                    <motion.div
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: 'auto' }}
+                      exit={{ opacity: 0, width: 0 }}
+                      className="flex items-center gap-1 p-1 rounded-md border bg-background overflow-hidden"
+                    >
+                      <button onClick={() => setHighlightColor('yellow')} className={`h-6 w-6 rounded-full bg-[#fde047] border-2 ${highlightColor === 'yellow' ? 'border-primary' : 'border-transparent'} transition-all`}></button>
+                      <button onClick={() => setHighlightColor('blue')} className={`h-6 w-6 rounded-full bg-[#60a5fa] border-2 ${highlightColor === 'blue' ? 'border-primary' : 'border-transparent'} transition-all`}></button>
+                      <button onClick={() => setHighlightColor('green')} className={`h-6 w-6 rounded-full bg-[#4ade80] border-2 ${highlightColor === 'green' ? 'border-primary' : 'border-transparent'} transition-all`}></button>
+                      <button onClick={() => setHighlightColor('red')} className={`h-6 w-6 rounded-full bg-[#f87171] border-2 ${highlightColor === 'red' ? 'border-primary' : 'border-transparent'} transition-all`}></button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 
                 <div className="relative" ref={downloadMenuRef}>
                   <Button 
