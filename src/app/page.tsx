@@ -55,7 +55,6 @@ function AddCardPointer({ isActive }: { isActive: boolean }) {
 
 export default function Home() {
   const [text, setText] = useState('');
-  const [files, setFiles] = useState<{file: File, mimeType: string, type: 'image' | 'pdf', extractedText?: string}[]>([]);
   const [flashcards, setFlashcards] = useState<FlashcardType[]>([]);
   const [rawOutput, setRawOutput] = useState<string>('');
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -162,74 +161,22 @@ export default function Home() {
     processFile(0);
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadedFiles = event.target.files;
-    if (!uploadedFiles) return;
-
-    const fileArray = Array.from(uploadedFiles);
-
-    fileArray.forEach(async (file) => {
-        const type = file.type.startsWith('image/') ? 'image' : file.type === 'application/pdf' ? 'pdf' : 'other';
-
-        if (type === 'pdf') {
-            const formData = new FormData();
-            formData.append('pdf', file);
-            try {
-                const response = await fetch('/api/process-pdf', {
-                    method: 'POST',
-                    body: formData,
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    setFiles(prev => [...prev, {file, mimeType: file.type, type, extractedText: data.text}]);
-                } else {
-                    console.error('Error processing PDF:', data.error);
-                    // Handle error, maybe show a toast
-                }
-            } catch (error) {
-                console.error('Error sending PDF to API:', error);
-                // Handle network error
-            }
-        } else if (type === 'image') {
-            setFiles(prev => [...prev, {file, mimeType: file.type, type}]);
-        }
-    });
-  };
-
-  const handleRemoveFile = (index: number) => {
-    setFiles(prev => prev.filter((_, i) => i !== index));
-  };
-
   const handleGenerate = () => {
-    if (text.trim().length === 0 && files.length === 0) {
+    if (text.trim().length === 0) {
         toast({
             variant: "destructive",
             title: "Input is empty",
-            description: "Please provide text or upload an image to generate flashcards.",
+            description: "Please provide text to generate flashcards.",
         });
         return;
     }
 
     let finalText = text;
-    if (text.trim().length === 0 && files.length > 0) {
-        finalText = 'Please generate flashcards from the attached files.';
-    }
 
     setProgressLogs([]); // Clear previous logs
     startTransition(async () => {
       const formData = new FormData();
       formData.append('text', finalText);
-      const pdfTexts: string[] = [];
-      files.forEach((fileItem) => {
-        if (fileItem.type === 'image') {
-          formData.append('files', fileItem.file);
-        } else if (fileItem.type === 'pdf' && fileItem.extractedText) {
-          pdfTexts.push(fileItem.extractedText);
-        }
-      });
-      if (pdfTexts.length > 0) {
-        formData.append('pdfText', pdfTexts.join('\n\n'));
-      }
       const result = await generateFlashcardsAction(formData);
       setProgressLogs(result.logs || []);
       if (result.success && result.data) {
@@ -390,34 +337,7 @@ export default function Home() {
               <Button onClick={handleImportClick} size="lg" variant="outline" className="w-full sm:w-auto">
                 Import
               </Button>
-              <Button onClick={() => document.getElementById('file-upload')?.click()} size="lg" variant="outline" className="w-full sm:w-auto">
-                <ImageIcon className="mr-2" />
-                Add files
-              </Button>
             </div>
-            {files.length > 0 && (
-                <div className="mt-4 w-full">
-                    <h3 className="text-lg font-semibold mb-2">File Preview:</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {files.map((fileItem, index) => {
-                            console.log('File object in map:', fileItem);
-                            return (
-                            <div key={index} className="relative group">
-                                {fileItem.type === 'image' ? (
-                                    <img src={URL.createObjectURL(fileItem.file)} alt={`preview ${index}`} className="w-full h-32 object-cover rounded-lg" />
-                                ) : (
-                                    <div className="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center">
-                                        <p className="text-gray-500">PDF Preview</p>
-                                    </div>
-                                )}
-                                <Button onClick={() => handleRemoveFile(index)} variant="destructive" size="icon" className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <X className="h-4 w-4" />
-                                </Button>
-                            </div>
-                        )})}
-                    </div>
-                </div>
-            )}
             </div>
         </div>
       ) : isPending ? (
@@ -543,14 +463,6 @@ export default function Home() {
         ref={fileInputRef}
         onChange={handleImport}
         accept=".json"
-        multiple
-        className="hidden"
-      />
-    <input
-        type="file"
-        id="file-upload"
-        onChange={handleFileUpload}
-        accept="image/*,application/pdf"
         multiple
         className="hidden"
       />
