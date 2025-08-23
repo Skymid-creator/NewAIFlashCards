@@ -7,7 +7,6 @@ import { fileManager } from '@/ai/genkit';
 import {promises as fs} from 'fs';
 import path from 'path';
 import os from 'os';
-import pdf from 'pdf-parse';
 
 export async function generateFlashcardsAction(formData: FormData) {
   try {
@@ -26,12 +25,8 @@ export async function generateFlashcardsAction(formData: FormData) {
         });
         await fs.unlink(tempFilePath);
         return { url: uploadResult.file.uri, contentType: file.type };
-      } else if (file.type === 'application/pdf') {
-        const arrayBuffer = await file.arrayBuffer();
-        const data = await pdf(Buffer.from(arrayBuffer));
-        return { text: data.text };
       }
-      // If the file type is neither image nor PDF, return an object that doesn't match the expected types
+      // If the file type is not an image, return an object that doesn't match the expected types
       // This case should ideally be handled by frontend filtering.
       return { url: '', contentType: '' }; // Fallback for unexpected file types
     }));
@@ -39,7 +34,7 @@ export async function generateFlashcardsAction(formData: FormData) {
     const { flashcards, rawOutput, logs } = await generateFlashcards({
       text,
       images: fileParts.filter((part): part is { url: string, contentType: string } => 'url' in part && part.url !== ''),
-      pdfText: fileParts.filter((part): part is { text: string } => 'text' in part).map(part => part.text).join('\n\n'),
+      pdfText: '',
     });
 
     // The flow now throws on error, so if we get here, the output should be valid.
