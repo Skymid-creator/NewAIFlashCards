@@ -15,6 +15,10 @@ interface MindMapDialogProps {
   onGenerate: () => void;
   isGenerating: boolean;
   onClear: () => void;
+  expandedPaths: Set<string>;
+  onExpandedPathsChange: (paths: Set<string>) => void;
+  viewTransform: ViewTransform | null;
+  onViewTransformChange: (transform: ViewTransform | null) => void;
 }
 
 type ViewTransform = { k: number; x: number; y: number };
@@ -27,7 +31,11 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
   markdown,
   onGenerate,
   isGenerating,
-  onClear
+  onClear,
+  expandedPaths,
+  onExpandedPathsChange,
+  viewTransform,
+  onViewTransformChange,
 }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const mmRef = useRef<Markmap>();
@@ -38,18 +46,16 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
   const [showNotification, setShowNotification] = useState(false);
   const [showDownloadMenu, setShowDownloadMenu] = useState(false);
   
-  const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set());
-  const [viewTransform, setViewTransform] = useState<ViewTransform | null>(null);
-  
   // Track if this is the initial load for new markdown
   const [isNewMarkdown, setIsNewMarkdown] = useState(false);
+  const [areAllNodesExpanded, setAreAllNodesExpanded] = useState(false);
 
   useEffect(() => {
     if (markdown && markdown !== internalMarkdown) {
       console.log('New markdown received:', markdown.substring(0, 100) + '...');
       setInternalMarkdown(markdown);
       setHasGenerated(true);
-      setExpandedPaths(new Set()); 
+      onExpandedPathsChange(new Set()); 
       setIsNewMarkdown(true); // Mark as new content
       setShowNotification(true);
       
@@ -92,14 +98,14 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
       }
     };
     traverseNode(mmRef.current.state.data);
-    setExpandedPaths(newExpandedPaths);
+    onExpandedPathsChange(newExpandedPaths);
     console.log('Saved expanded paths:', Array.from(newExpandedPaths));
   };
 
   const saveViewState = () => {
     if (mmRef.current?.svg?.node()) {
       const transform = zoomTransform(mmRef.current.svg.node());
-      setViewTransform({ k: transform.k, x: transform.x, y: transform.y });
+      onViewTransformChange({ k: transform.k, x: transform.x, y: transform.y });
       console.log('View state saved:', transform);
     }
   };
@@ -169,28 +175,17 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
       svgNode.addEventListener('touchend', debouncedSave);
       svgNode.addEventListener('wheel', debouncedSave);
       
-      // Override rescale to save expansion state and maintain view
+      // Override rescale to save expansion state and fit the view
       const originalRescale = mm.rescale.bind(mm);
       mm.rescale = function(...args: any[]) {
-        // Save current transform before rescaling
-        const currentTransform = zoomTransform(svgNode);
-        
         const result = originalRescale(...args);
-        
-        // Save expanded state
         setTimeout(() => {
           saveExpandedState();
-          
-          // Restore view position after expansion/collapse
-          if (currentTransform && (currentTransform.k !== 1 || currentTransform.x !== 0 || currentTransform.y !== 0)) {
-            const newTransform = zoomIdentity
-              .translate(currentTransform.x, currentTransform.y)
-              .scale(currentTransform.k);
-            mm.zoom.transform(mm.svg, newTransform);
-            saveViewState();
+          if (mmRef.current) {
+            mmRef.current.fit();
           }
+          saveViewState();
         }, 350);
-        
         return result;
       };
 
@@ -261,8 +256,8 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
     }
     setInternalMarkdown('');
     setHasGenerated(false);
-    setExpandedPaths(new Set());
-    setViewTransform(null); 
+    onExpandedPathsChange(new Set());
+    onViewTransformChange(null); 
     setIsNewMarkdown(false);
     setShowNotification(false);
     onClear();
@@ -270,10 +265,39 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
 
   const handleGenerate = () => {
     console.log('Generate button clicked');
-    setExpandedPaths(new Set());
-    setViewTransform(null); // Reset view for regeneration
+    onExpandedPathsChange(new Set());
+    onViewTransformChange(null); // Reset view for regeneration
     setIsNewMarkdown(true); // Mark as new content
     onGenerate();
+  };
+
+  const handleToggleExpandAll = () => {
+    if (!mmRef.current) return;
+    const { data } = mmRef.current.state;
+
+    const traverseAndToggle = (node: any, expand: boolean, isRoot = true) => {
+      if (!node) return;
+      // Don't fold the root node itself, but ensure it's unfolded
+      if (isRoot) {
+        node.payload = { ...node.payload, fold: 0 };
+      } else {
+        node.payload = { ...node.payload, fold: expand ? 0 : 1 };
+      }
+
+      if (node.children) {
+        node.children.forEach(child => traverseAndToggle(child, expand, false));
+      }
+    };
+
+    const newAreAllNodesExpanded = !areAllNodesExpanded;
+    traverseAndToggle(data, newAreAllNodesExpanded);
+    mmRef.current.setData(data);
+    setTimeout(() => {
+        if (mmRef.current) {
+            mmRef.current.fit();
+        }
+    }, 100); // a small delay
+    setAreAllNodesExpanded(newAreAllNodesExpanded);
   };
 
   const handleDownload = async (format: 'png' | 'svg' = 'png', quality: 'standard' | 'high' | 'ultra' = 'high') => {
@@ -503,6 +527,9 @@ const MindMapDialog: React.FC<MindMapDialogProps> = ({
                 </Button>
                 <Button onClick={handleClear} disabled={!hasGenerated || isGenerating} variant="outline">
                   Clear
+                </Button>
+                <Button onClick={handleToggleExpandAll} disabled={!hasGenerated || isGenerating} variant="outline">
+                  {areAllNodesExpanded ? 'Collapse All' : 'Expand All'}
                 </Button>
                 
                 <div className="relative" ref={downloadMenuRef}>

@@ -46,7 +46,7 @@ export const SummaryProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <SummaryContext.Provider value={{ summaries, generateSummary, clearSummaries, deleteSummary }}>
+    <SummaryContext.Provider value={{ summaries, setSummaries, generateSummary, clearSummaries, deleteSummary }}>
       {children}
     </SummaryContext.Provider>
   );

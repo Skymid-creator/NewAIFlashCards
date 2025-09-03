@@ -16,11 +16,14 @@ import CardListSidebar from '@/components/card-list-sidebar';
 import { Card, CardContent } from '@/components/ui/card';
 import MindMapDialog from '@/components/mind-map-dialog';
 import { generateMindMap } from '@/ai/flows/generate-mind-map';
+import { useSummary } from '@/context/SummaryContext';
 
 type DeletedFlashcard = {
     card: FlashcardType;
     index: number;
 }
+
+type ViewTransform = { k: number; x: number; y: number };
 
 function AddCardPointer({ isActive }: { isActive: boolean }) {
     const [position, setPosition] = useState({ x: -1000, y: -1000 });
@@ -71,6 +74,9 @@ export default function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const [progressLogs, setProgressLogs] = useState<string[]>([]);
+  const { summaries, setSummaries } = useSummary();
+  const [mindMapExpandedPaths, setMindMapExpandedPaths] = useState<Set<string>>(new Set());
+  const [mindMapViewTransform, setMindMapViewTransform] = useState<ViewTransform | null>(null);
 
   useEffect(() => {
     if (!editMode) {
@@ -79,9 +85,19 @@ export default function Home() {
   }, [editMode]);
 
   const handleExport = () => {
-    const dataStr = JSON.stringify(flashcards, null, 2);
+    const exportData = {
+      flashcards,
+      summaries,
+      mindMap: {
+        markdown: mindMapMarkdown,
+        expandedPaths: Array.from(mindMapExpandedPaths), // Convert Set to Array for JSON
+        viewTransform: mindMapViewTransform,
+      },
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-    const exportFileDefaultName = 'flashcards.json';
+    const exportFileDefaultName = 'flashcard-export.json';
 
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
@@ -89,8 +105,8 @@ export default function Home() {
     linkElement.click();
 
     toast({
-      title: "Flashcards Exported",
-      description: "Your flashcards have been successfully exported.",
+      title: "Export Successful",
+      description: "Your session has been successfully exported.",
     });
   };
 
@@ -99,67 +115,49 @@ export default function Home() {
   };
 
   const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-    let allImportedFlashcards: FlashcardType[] = [];
-    let successfulImports = 0;
-    let failedImports = 0;
+    const reader = new FileReader();
 
-    const processFile = (index: number) => {
-      if (index >= files.length) {
-        if (successfulImports > 0) {
-          setFlashcards(prev => [...prev, ...allImportedFlashcards]);
+    reader.onload = (e) => {
+      try {
+        const importedData = JSON.parse(e.target?.result as string);
+
+        // Validate the imported data structure
+        if (importedData && Array.isArray(importedData.flashcards) && Array.isArray(importedData.summaries) && importedData.mindMap) {
+          setFlashcards(importedData.flashcards);
+          setSummaries(importedData.summaries);
+          setMindMapMarkdown(importedData.mindMap.markdown || '');
+          setMindMapExpandedPaths(new Set(importedData.mindMap.expandedPaths || []));
+          setMindMapViewTransform(importedData.mindMap.viewTransform || null);
+          
           setDeletedFlashcards([]); // Clear deleted cards on import
+
           toast({
-            title: "Flashcards Imported",
-            description: `Successfully imported ${successfulImports} file(s). ${failedImports > 0 ? `Failed to import ${failedImports} file(s).` : ''}`,
+            title: "Import Successful",
+            description: "Your session has been successfully restored.",
           });
         } else {
           toast({
             variant: "destructive",
             title: "Import Failed",
-            description: "No valid flashcards were found in the selected files.",
+            description: "Invalid file format. Please ensure it's a valid export file.",
           });
         }
-        return;
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Import Failed",
+          description: "Error parsing file. Please ensure it's a valid JSON.",
+        });
       }
-
-      const file = files[index];
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        try {
-          const importedData = JSON.parse(e.target?.result as string);
-          if (Array.isArray(importedData) && importedData.every(card => card.question && card.answer)) {
-            const flashcardsWithIds = importedData.map(card => ({
-              ...card,
-              id: uuidv4(),
-            }));
-            allImportedFlashcards = [...allImportedFlashcards, ...flashcardsWithIds];
-            successfulImports++;
-          } else {
-            failedImports++;
-            toast({
-              variant: "destructive",
-              title: "Import Failed",
-              description: `File '${file.name}': Invalid format. Please ensure it's a valid flashcards JSON file.`,
-            });
-          }
-        } catch (error) {
-          failedImports++;
-          toast({
-            variant: "destructive",
-            title: "Import Failed",
-            description: `File '${file.name}': Error parsing file. Please ensure it's a valid JSON.`,
-          });
-        }
-        processFile(index + 1);
-      };
-      reader.readAsText(file);
     };
 
-    processFile(0);
+    reader.readAsText(file);
+    
+    // Reset the file input value to allow importing the same file again
+    event.target.value = '';
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -537,6 +535,10 @@ export default function Home() {
         onGenerate={handleGenerateMindMap}
         isGenerating={isGeneratingMindMap}
         onClear={() => setMindMapMarkdown('')}
+        expandedPaths={mindMapExpandedPaths}
+        onExpandedPathsChange={setMindMapExpandedPaths}
+        viewTransform={mindMapViewTransform}
+        onViewTransformChange={setMindMapViewTransform}
       />
     <input
         type="file"
