@@ -17,6 +17,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import MindMapDialog from '@/components/mind-map-dialog';
 import { generateMindMap } from '@/ai/flows/generate-mind-map';
 import { useSummary } from '@/context/SummaryContext';
+import { SummarySidebar } from '@/components/summary-sidebar';
 
 type DeletedFlashcard = {
     card: FlashcardType;
@@ -77,6 +78,7 @@ export default function Home() {
   const { summaries, setSummaries } = useSummary();
   const [mindMapExpandedPaths, setMindMapExpandedPaths] = useState<Set<string>>(new Set());
   const [mindMapViewTransform, setMindMapViewTransform] = useState<ViewTransform | null>(null);
+  const [isSummarySidebarOpen, setIsSummarySidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!editMode) {
@@ -503,6 +505,12 @@ export default function Home() {
             onCardSelect={(index) => setActiveCardIndex(index)}
             className="flex-grow"
           />
+          <div className="mt-4 flex justify-center">
+            <Button onClick={() => setIsSummarySidebarOpen(true)} variant="secondary">
+              <Sparkles className="mr-2" />
+              View FlashNotes
+            </Button>
+          </div>
           {rawOutput && (
             <div className="mt-8 w-full flex-shrink-0">
               <h2 className="text-xl font-semibold mb-2">Raw AI Output</h2>
@@ -539,6 +547,10 @@ export default function Home() {
         onExpandedPathsChange={setMindMapExpandedPaths}
         viewTransform={mindMapViewTransform}
         onViewTransformChange={setMindMapViewTransform}
+      />
+      <SummarySidebar
+        isOpen={isSummarySidebarOpen}
+        onOpenChange={setIsSummarySidebarOpen}
       />
     <input
         type="file"

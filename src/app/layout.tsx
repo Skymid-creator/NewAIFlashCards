@@ -26,7 +26,6 @@ export default function RootLayout({
       <body className={cn("font-sans antialiased", inter.variable)}>
         <SummaryProvider>
           {children}
-          <SummarySidebar />
         </SummaryProvider>
         <Toaster />
       </body>

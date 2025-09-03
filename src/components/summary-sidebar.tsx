@@ -13,22 +13,30 @@ import { cn } from '@/lib/utils';
 
 const UNDO_TIMEOUT = 5000; // 5 seconds
 
-export function SummarySidebar() {
+export function SummarySidebar({ isOpen, onOpenChange }: { isOpen: boolean, onOpenChange: (isOpen: boolean) => void }) {
   const { summaries, deleteSummary } = useSummary();
-  const [isOpen, setIsOpen] = useState(false);
   const prevSummariesLength = useRef(summaries.length);
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
   const undoTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const scrollEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (summaries.length > prevSummariesLength.current) {
+      setTimeout(() => {
+        scrollEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [summaries]);
 
   useEffect(() => {
     const currentLength = summaries.length;
     const prevLength = prevSummariesLength.current;
 
     if (currentLength > 0 && currentLength > prevLength) {
-      setIsOpen(true);
+      onOpenChange(true);
     }
     prevSummariesLength.current = currentLength;
-  }, [summaries, setIsOpen]);
+  }, [summaries, onOpenChange]);
 
   useEffect(() => {
     return () => {
@@ -83,12 +91,7 @@ export function SummarySidebar() {
 
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        <Button variant="secondary" className="fixed top-4 right-4 z-10 px-4 py-2 shadow-lg hover:shadow-xl transition-all duration-300">
-          <Sparkles className="h-5 w-5 mr-2" /> FlashNotes
-        </Button>
-      </SheetTrigger>
+    <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-full sm:w-[500px] flex flex-col">
         <SheetHeader>
           <SheetTitle className="flex justify-between items-center">
@@ -131,6 +134,7 @@ export function SummarySidebar() {
                     )}
                   </Card>
                 ))}
+                <div ref={scrollEndRef} />
               </div>
             </ScrollArea>
           ) : (
