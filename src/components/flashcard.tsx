@@ -16,6 +16,8 @@ type FlashcardProps = {
   onEdit: (id: string, newQuestion: string, newAnswer: string) => void;
   onDelete: (id: string) => void;
   editMode: boolean;
+  isFlipped: boolean;
+  onFlip: () => void;
 };
 
 // --- (No changes to this button component) ---
@@ -48,19 +50,18 @@ const GeminiRememberButton = ({
   );
 };
 
-const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, editMode }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+const Flashcard: React.FC<FlashcardProps> = memo(({ card, onEdit, onDelete, editMode, isFlipped, onFlip }) => {
   const [question, setQuestion] = useState(card.question);
   const [answer, setAnswer] = useState(card.answer);
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const { generateSummary } = useSummary();
 
   // --- (No changes to hooks or handlers) ---
-  useEffect(() => { setIsFlipped(false); }, [card.id, editMode]);
+  
   useEffect(() => { if (question !== card.question) { const handler = setTimeout(() => { onEdit(card.id, question, answer); }, 500); return () => clearTimeout(handler); } }, [question, card.id, card.question, answer, onEdit]);
   useEffect(() => { if (answer !== card.answer) { const handler = setTimeout(() => { onEdit(card.id, question, answer); }, 500); return () => clearTimeout(handler); } }, [answer, card.id, card.answer, question, onEdit]);
-  const handleCardClick = (e: React.MouseEvent) => { if (!editMode) { const target = e.target as HTMLElement; if (target.tagName === 'A' || target.closest('button')) { e.stopPropagation(); return; } setIsFlipped(!isFlipped); } };
-  const handleFlipButtonClick = (e: React.MouseEvent) => { e.stopPropagation(); setIsFlipped(!isFlipped); };
+  const handleCardClick = (e: React.MouseEvent) => { if (!editMode) { const target = e.target as HTMLElement; if (target.tagName === 'A' || target.closest('button')) { e.stopPropagation(); return; } onFlip(); } };
+  const handleFlipButtonClick = (e: React.MouseEvent) => { e.stopPropagation(); onFlip(); };
   const handleRememberClick = async (e: React.MouseEvent) => { e.stopPropagation(); setIsSummaryLoading(true); try { await generateSummary(card.question, card.answer, () => {}, () => setIsSummaryLoading(false)); } catch (error) { console.error('Error generating summary:', error); setIsSummaryLoading(false); } };
   const stopPropagation = (e: React.SyntheticEvent) => { e.stopPropagation(); };
   const handleQuestionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => { setQuestion(e.target.value); };

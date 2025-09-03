@@ -45,7 +45,7 @@ function AddCardDropZone({ onClick, isAdding }: { onClick: () => void; isAdding:
     );
 }
 
-const SortableFlashcard = memo(function SortableFlashcard({ card, onEdit, onDelete, editMode }: { card: FlashcardType; onEdit: FlashcardCarouselProps['onEdit']; onDelete: FlashcardCarouselProps['onDelete']; editMode: boolean }) {
+const SortableFlashcard = memo(function SortableFlashcard({ card, onEdit, onDelete, editMode, isFlipped, onFlip }: { card: FlashcardType; onEdit: FlashcardCarouselProps['onEdit']; onDelete: FlashcardCarouselProps['onDelete']; editMode: boolean; isFlipped: boolean; onFlip: () => void; }) {
   const {
     attributes,
     listeners,
@@ -68,6 +68,8 @@ const SortableFlashcard = memo(function SortableFlashcard({ card, onEdit, onDele
         onEdit={onEdit}
         onDelete={onDelete}
         editMode={editMode}
+        isFlipped={isFlipped}
+        onFlip={onFlip}
       />
     </div>
   );
@@ -89,12 +91,38 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
   const [current, setCurrent] = React.useState(0);
   const [total, setTotal] = React.useState(0);
   const [activeId, setActiveId] = React.useState<string | null>(null);
+  const [flippedCards, setFlippedCards] = React.useState<Set<string>>(new Set());
 
   React.useEffect(() => {
     if (api && scrollToIndex !== null) {
       api.scrollTo(scrollToIndex);
     }
   }, [api, scrollToIndex]);
+
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.code === 'Space') {
+        event.preventDefault();
+        const currentCard = cards[api.selectedScrollSnap()];
+        if (currentCard) {
+          setFlippedCards(prev => {
+            const newFlipped = new Set(prev);
+            if (newFlipped.has(currentCard.id)) {
+              newFlipped.delete(currentCard.id);
+            } else {
+              newFlipped.add(currentCard.id);
+            }
+            return newFlipped;
+          });
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [api, cards]);
 
   const handleApiInit = (api: CarouselApi) => {
     if (!api) return;
@@ -193,6 +221,18 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
                                 onEdit={onEdit}
                                 onDelete={onDelete}
                                 editMode={editMode}
+                                isFlipped={flippedCards.has(card.id)}
+                                onFlip={() => {
+                                    setFlippedCards(prev => {
+                                        const newFlipped = new Set(prev);
+                                        if (newFlipped.has(card.id)) {
+                                            newFlipped.delete(card.id);
+                                        } else {
+                                            newFlipped.add(card.id);
+                                        }
+                                        return newFlipped;
+                                    });
+                                }}
                             />
                         </div>
                         {editMode && (
@@ -214,6 +254,18 @@ export default function FlashcardCarousel({ cards, onEdit, onDelete, onAddCard, 
                 onEdit={onEdit}
                 onDelete={onDelete}
                 editMode={editMode}
+                isFlipped={flippedCards.has(activeCard.id)}
+                onFlip={() => {
+                    setFlippedCards(prev => {
+                        const newFlipped = new Set(prev);
+                        if (newFlipped.has(activeCard.id)) {
+                            newFlipped.delete(activeCard.id);
+                        } else {
+                            newFlipped.add(activeCard.id);
+                        }
+                        return newFlipped;
+                    });
+                }}
               />
             </div>
           ) : null}
